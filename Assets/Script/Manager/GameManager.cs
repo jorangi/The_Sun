@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public TMPro.TMP_FontAsset mainFont;
     public GameObject LogBox;
     public GameObject Logs;
-    public TileInfoTab infoTab;
+    //public TileInfoTab infoTab;
     public Tooltip tooltip;
     public Tiles tiles;
     public DataManager dataManager;

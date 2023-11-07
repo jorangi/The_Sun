@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,22 +15,22 @@ public class SaintCrown : Relic
     {
         base.RunAbility();
         Tiles tiles = GameManager.Inst.tiles;
-        Tile t;
+        TileData t;
         bool a = false;
-        foreach(Tile tile in tiles.tiles)
+        foreach(TileData tile in tiles.tileDatas)
         {
-            if(tile.mainReligion.religionType == ReligionType.none)
+            if(tile.SettedRel == ReligionType.none)
             {
                 a = true;
                 break;
             }
         }
-        if(a)
+        if (a)
         {
             do
             {
-                t = tiles.tiles[Random.Range(0, tiles.height), Random.Range(0, tiles.width)];
-            } while (t.mainReligion.religionType != ReligionType.none);
+                t = tiles.tileDatas[UnityEngine.Random.Range(0, tiles.height), UnityEngine.Random.Range(0, tiles.width)];
+            } while (t.SettedRel != ReligionType.none);
 
             GameManager.Inst.tiles.AddTile(owner, t);
         }

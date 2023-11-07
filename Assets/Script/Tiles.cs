@@ -9,11 +9,31 @@ public class ReligionDataInTile
 {
     private ReligionType religionType;
     private SpriteRenderer fogSprite;
-    public int Dysentery { get; set; }
-    public int Influence { get; set; }
-    public int AutoOcc { get; set; }
-    public bool ServeidRel { get; set; }
-    public bool unfogging;
+    private int dysentery;
+    public int Dysentery
+    {
+        get => dysentery;
+        set => dysentery = value;
+    }
+    private int influence;
+    public int Influence
+    {
+        get => influence;
+        set => influence = value;
+    }
+    private int autoOcc;
+    public int AutoOcc
+    {
+        get => autoOcc;
+        set => autoOcc = value;
+    }
+    private bool serveidRel;
+    public bool ServeidRel
+    {
+        get => serveidRel;
+        set => serveidRel = value;
+    }
+    private bool unfogging;
     public bool Unfogging
     {
         get => unfogging;
@@ -144,14 +164,14 @@ public class Tiles : MonoBehaviour
     public int width, height;
     public float AvgTotalMadeCoin;
     public GameObject TilePrefab;
-    public Tile[,] tiles;
-    public Tile setTile;
+    //public Tile[,] tiles;
+    //public Tile setTile;
     public Color goodTile, badTile, enableTile, disableTile, blockedTile;
 
     //게임 플레이 관련
     private Religion player;
     private Religion bestRel;
-    private bool EternalTorchGet = false;
+    //private bool EternalTorchGet = false;
     public Religion miracleTargetRel = null;
     public List<bool> tileSelectable = new();
     private bool autoPlay = false;
@@ -162,23 +182,23 @@ public class Tiles : MonoBehaviour
     public int MaxInfluence = 20;
     public int MaxRelic;
     public int MaxReligion;
-    private ReligionType turnRel;
+    private Religion turnRel;
     public Religion TurnRel
     {
         get => turnRel;
-        set
-        {
-            if(value != ReligionType.none)
-            {
-                TurnObject.GetComponent<Image>().sprite = symbols[System.Array.IndexOf(System.Enum.GetNames(typeof(ReligionType)), value.ToString()) - 1];
-            }
-            turnRel = value;
-        }
+        set => turnRel = value;
+        //{
+        //    if(value != ReligionType.none)
+        //    {
+        //        TurnObject.GetComponent<Image>().sprite = symbols[System.Array.IndexOf(System.Enum.GetNames(typeof(ReligionType)), value.ToString()) - 1];
+        //    }
+        //    turnRel = value;
+        //}
     }
     public Dictionary<Miracle, ReligionType> usingMiracle = new();
     public Dictionary<Miracle, int> MiracleTurn = new();
     public Dictionary<ReligionType, Religion> ReligionDic = new();
-    public Dictionary<HolyRelic, Tile> holyRelic = new();
+    //public Dictionary<HolyRelic, Tile> holyRelic = new();
     public Dictionary<HolyRelic, GameObject> RelicDic = new();
     public List<HolyRelic> holyRelics = new();
     public Dictionary<ReligionType, int[]> RecoredDir = new();
@@ -542,7 +562,7 @@ public class Tiles : MonoBehaviour
     public int RandomActable(Religion rel)
     {
         int i = 0;
-        re:
+        //re:
         if(rel.relics.Contains(HolyRelic.GuardCharm))
         {
             if(rel.relics.Contains(HolyRelic.MiracleDice))
@@ -625,7 +645,7 @@ public class Tiles : MonoBehaviour
     }
     public void ShowTileInfoTab()
     {
-        GameManager.Inst.infoTab.SetUp(setTile);
+        //GameManager.Inst.infoTab.SetUp(setTile);
     }
     public void GetRelic(Religion rel, HolyRelic relic)
     {
@@ -933,14 +953,14 @@ public class Tiles : MonoBehaviour
         DetailUI.SetActive(!DetailUI.activeSelf);
         if(DetailUI.activeSelf)
         {
-            DetailUI.transform.Find("Ideal").GetComponent<TextMeshProUGUI>().text = $"이상 : {ReligionDic[playerRel].Ideal}";
-            DetailUI.transform.Find("Dysentery").GetComponent<TextMeshProUGUI>().text = $"이질 : {ReligionDic[playerRel].Dysentery}";
-            DetailUI.transform.Find("Logic").GetComponent<TextMeshProUGUI>().text = $"논리 : {ReligionDic[playerRel].Logic}";
+            //DetailUI.transform.Find("Ideal").GetComponent<TextMeshProUGUI>().text = $"이상 : {ReligionDic[playerRel].Ideal}";
+            //DetailUI.transform.Find("Dysentery").GetComponent<TextMeshProUGUI>().text = $"이질 : {ReligionDic[playerRel].Dysentery}";
+            //DetailUI.transform.Find("Logic").GetComponent<TextMeshProUGUI>().text = $"논리 : {ReligionDic[playerRel].Logic}";
         }
     }
     public void ShowTech()
     {
-        if(TurnRel != playerRel)
+        if(TurnRel != player)
         {
             GameManager.Inst.ShowLogBox("현재 플레이어의 턴이 아닙니다.");
             return;
@@ -950,7 +970,7 @@ public class Tiles : MonoBehaviour
         else
             tileSelectable.Add(true);
         TechUI.SetActive(!TechUI.activeSelf);
-        TechUI.transform.Find("TechPoint").GetComponent<TextMeshProUGUI>().text = $"테크 포인트 : {ReligionDic[playerRel].TechPoint}";
+        TechUI.transform.Find("TechPoint").GetComponent<TextMeshProUGUI>().text = $"테크 포인트 : {player.TechPoint}";
     }
     public void ProductAtTiles()
     {

@@ -13,11 +13,11 @@ public class SaintStaff : Relic
     public override void RunAbility()
     {
         base.RunAbility();
-        for(int i = 0; i<owner.GetTiles.Count; i++)
+        for(int i = 0; i<owner.HasTiles.Count; i++)
         {
             if(Random.Range(0f, 1f) <= 0.3f)
             {
-                owner.Sunlight += 1;
+                owner.assets.Sunlight += 1;
             }
         }
     }

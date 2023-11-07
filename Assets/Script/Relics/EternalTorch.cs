@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class EternalTorch : Relic
 {
-    public Tile tile;
+    public TileData tileData;
     public override void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
@@ -15,7 +15,7 @@ public class EternalTorch : Relic
     {
         base.RunAbility();
 
-        Vector2Int Pos = tile.Pos;
+        Vector2Int Pos = tileData.POS;
 
         for (int i = Mathf.Max(0, Pos.y - owner.TorchRange); i <= Mathf.Min(GameManager.Inst.tiles.height - 1, Pos.y + owner.TorchRange); i++)
         {
@@ -23,7 +23,7 @@ public class EternalTorch : Relic
             {
                 if (Mathf.Abs(Pos.y - i) + Mathf.Abs(Pos.x - j) <= owner.TorchRange)
                 {
-                    GameManager.Inst.tiles.tiles[i, j].SetFog(owner, false);
+                    //GameManager.Inst.tiles.tilesDatas[i, j].SetFog(owner, false);
                 }
             }
         }

@@ -13,16 +13,16 @@ public class OldMap : Relic
     public override void RunAbility()
     {
         base.RunAbility();
-        foreach (Tile tile in GameManager.Inst.tiles.tiles)
+        foreach (TileData tileDatas in GameManager.Inst.tiles.tileDatas)
         {
-            tile.SetFog(owner, false);
+            //tile.SetFog(owner, false);
         }
     }
     public void HideMap()
     {
-        foreach (Tile tile in GameManager.Inst.tiles.tiles)
+        foreach (TileData tileDatas in GameManager.Inst.tiles.tileDatas)
         {
-            tile.SetFog(owner, true);
+            //tile.SetFog(owner, true);
         }
     }
 }

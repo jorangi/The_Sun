@@ -83,6 +83,7 @@ public abstract class Religion
     public List<Vector2Int> TorchedTile;
     public List<TileData> HasTiles = new();
 
+    public ReligionAssets assets;
     public TechList techList;
     private int techPoint;
     public int TechPoint
@@ -119,7 +120,7 @@ public abstract class Religion
     public List<HolyRelic> relics = new();
     public List<Miracle> miracles = new();
     public ReligionType religionType;
-    public List<Tile> GetTiles = new();
+    //public List<Tile> GetTiles = new();
     public Color religionColor;
     public Sprite symbol;
     private int torchRange;
@@ -129,15 +130,15 @@ public abstract class Religion
         set
         {
             torchRange = value;
-            foreach (Tile tile in GetTiles)
+            foreach (TileData tileData in HasTiles)
             {
-                tile.SetFog(this);
+                tileData.ReligionsDataInTile[religionType].Unfogging = true;
             }
         }
     }
     public bool isSnakeVenom;
-    public List<Tile> knownRelicTile = new();
-    public List<Tile> TempTorchedTile = new();
+    //public List<Tile> knownRelicTile = new();
+    //public List<Tile> TempTorchedTile = new();
 
     public bool CheckContainShowedTile(TileData tileData) => TorchedTile.Contains(tileData.POS);
     public Religion(ReligionType relT, Vector2Int startPlace)

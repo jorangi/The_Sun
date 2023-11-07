@@ -17,14 +17,14 @@ public class Tile:MonoBehaviour
     public Dictionary<Religion, int> autoOcc = new();
 
     //종교 관련 데이터
-    public List<Religions> History = new();
-    public Religion mainReligion = new();
-    public Dictionary<Religions, int> influence = new();
-    public Dictionary<Religions, int> stability = new();
-    public Dictionary<Religions, int> dysentery = new();
-    public List<Religions> met = new();
+    public List<ReligionType> History = new();
+    public Religion mainReligion;
+    public Dictionary<ReligionType, int> influence = new();
+    public Dictionary<ReligionType, int> stability = new();
+    public Dictionary<ReligionType, int> dysentery = new();
+    public List<ReligionType> met = new();
     public int RisingTurn = 0;
-    public Religions Frozen = Religions.none;
+    public ReligionType Frozen = ReligionType.none;
     public int FrozenTurn = 0;
 
     //생산 관련 데이터
@@ -50,7 +50,7 @@ public class Tile:MonoBehaviour
     public float findTechBonus = 1.0f;
 
     //안개 관련
-    public Dictionary<Religions, List<bool>> fogBool = new();
+    public Dictionary<ReligionType, List<bool>> fogBool = new();
 
     private void Awake()
     {
@@ -83,132 +83,132 @@ public class Tile:MonoBehaviour
         }
         Refresh();
     }
-    public void Product()
-    {
-        goodPer = 10;
-        badPer = 10;
+    //public void Product()
+    //{
+    //    goodPer = 10;
+    //    badPer = 10;
 
-        float badPenalty = 1.0f;
+    //    float badPenalty = 1.0f;
 
-        if(condition == TileCondition.Bad)
-            mainReligion.Coin -= Mathf.RoundToInt(GameManager.Inst.tiles.baseMaintance * badPenalty);
-        else
-            mainReligion.Coin -= Mathf.RoundToInt(GameManager.Inst.tiles.baseMaintance);
+    //    if(condition == TileCondition.Bad)
+    //        mainReligion.Coin -= Mathf.RoundToInt(GameManager.Inst.tiles.baseMaintance * badPenalty);
+    //    else
+    //        mainReligion.Coin -= Mathf.RoundToInt(GameManager.Inst.tiles.baseMaintance);
 
-        mainReligion.Coin += ProCoin;
-        mainReligion.Sunlight += ProSunlight;
+    //    mainReligion.Coin += ProCoin;
+    //    mainReligion.Sunlight += ProSunlight;
 
-        TotalMadeCoin += Mathf.RoundToInt(ProCoin);
+    //    TotalMadeCoin += Mathf.RoundToInt(ProCoin);
 
-        if(mainReligion.religion != Religions.none)
-            for (int i = Mathf.Max(0, Pos.y - 1); i <= Mathf.Min(GameManager.Inst.tiles.height - 1, Pos.y + 1); i++)
-        {
-            for (int j = Mathf.Max(0, Pos.x - 1); j <= Mathf.Min(GameManager.Inst.tiles.width - 1, Pos.x + 1); j++)
-            {
-                if (Mathf.Abs(Pos.y - i) + Mathf.Abs(Pos.x - j) == 1 && Random.Range(0f, 1f) <= 0.4f)
-                {
-                    GameManager.Inst.tiles.tiles[i, j].AddInfluence(mainReligion, 1);
-                }
-            }
-        }
+    //    if(mainReligion.religionType != ReligionType.none)
+    //        for (int i = Mathf.Max(0, Pos.y - 1); i <= Mathf.Min(GameManager.Inst.tiles.height - 1, Pos.y + 1); i++)
+    //    {
+    //        for (int j = Mathf.Max(0, Pos.x - 1); j <= Mathf.Min(GameManager.Inst.tiles.width - 1, Pos.x + 1); j++)
+    //        {
+    //            if (Mathf.Abs(Pos.y - i) + Mathf.Abs(Pos.x - j) == 1 && Random.Range(0f, 1f) <= 0.4f)
+    //            {
+    //                GameManager.Inst.tiles.tiles[i, j].AddInfluence(mainReligion, 1);
+    //            }
+    //        }
+    //    }
 
 
-        foreach (Religions r in GameManager.Inst.tiles.religionsOrder)
-        {
-            autoOcc[GameManager.Inst.tiles.ReligionDic[r]] = 0;
+    //    foreach (ReligionType r in GameManager.Inst.tiles.religionsOrder)
+    //    {
+    //        autoOcc[GameManager.Inst.tiles.ReligionDic[r]] = 0;
 
-            if (!stability.ContainsKey(r))
-                continue;
+    //        if (!stability.ContainsKey(r))
+    //            continue;
 
-            Religion rel = GameManager.Inst.tiles.ReligionDic[r];
+    //        Religion rel = GameManager.Inst.tiles.ReligionDic[r];
 
-            float relDyBonus = 1.0f;
+    //        float relDyBonus = 1.0f;
 
-            if (rel.Tech[1, 0] && mainReligion.religion != Religions.none && mainReligion.religion != rel.religion)
-            {
-                relDyBonus -= 0.1f;
-            }
+    //        if (rel.Tech[1, 0] && mainReligion.religionType != ReligionType.none && mainReligion.religionType != rel.religionType)
+    //        {
+    //            relDyBonus -= 0.1f;
+    //        }
 
-            if (mainReligion.Tech[3, 0] && rel != mainReligion)
-            {
-                relDyBonus += 0.15f;
-            }
+    //        if (mainReligion.Tech[3, 0] && rel != mainReligion)
+    //        {
+    //            relDyBonus += 0.15f;
+    //        }
 
-            if (stability[r] > 0 && !Sacred.gameObject.activeSelf)
-            {
-                AddStability(rel, -1);
-                if (condition == TileCondition.Bad)
-                    AddStability(rel, -3);
+    //        if (stability[r] > 0 && !Sacred.gameObject.activeSelf)
+    //        {
+    //            AddStability(rel, -1);
+    //            if (condition == TileCondition.Bad)
+    //                AddStability(rel, -3);
 
-                if (Random.Range(0, 101) <= 100 - stability[r])
-                {
-                    int distanceDys = Mathf.RoundToInt(Vector2Int.Distance(rel.SacredPlace.Pos, Pos) / Mathf.Max(GameManager.Inst.tiles.width, GameManager.Inst.tiles.height) * GameManager.Inst.tiles.baseDysentery);
+    //            if (Random.Range(0, 101) <= 100 - stability[r])
+    //            {
+    //                int distanceDys = Mathf.RoundToInt(Vector2Int.Distance(rel.SacredPlace.Pos, Pos) / Mathf.Max(GameManager.Inst.tiles.width, GameManager.Inst.tiles.height) * GameManager.Inst.tiles.baseDysentery);
 
-                    AddInfluence(rel, -Mathf.RoundToInt((rel.Dysentery + distanceDys + dysentery[rel.religion]) * relDyBonus));
-                }
-            }
-            else if (stability[r] > 0 && Sacred.gameObject.activeSelf)
-            {
-                float rand = Random.Range(0f, 1f);
-                if (rand <= 0.4f)
-                {
-                    AddStability(rel, -1);
-                    if (condition == TileCondition.Bad)
-                        AddStability(rel, -1);
-                }
+    //                AddInfluence(rel, -Mathf.RoundToInt((rel.Dysentery + distanceDys + dysentery[rel.religionType]) * relDyBonus));
+    //            }
+    //        }
+    //        else if (stability[r] > 0 && Sacred.gameObject.activeSelf)
+    //        {
+    //            float rand = Random.Range(0f, 1f);
+    //            if (rand <= 0.4f)
+    //            {
+    //                AddStability(rel, -1);
+    //                if (condition == TileCondition.Bad)
+    //                    AddStability(rel, -1);
+    //            }
 
-                if (Random.Range(0, 101) <= 100 - stability[r])
-                {
-                    int distanceDys = Mathf.RoundToInt(Vector2Int.Distance(rel.SacredPlace.Pos, Pos) / Mathf.Max(GameManager.Inst.tiles.width, GameManager.Inst.tiles.height) * GameManager.Inst.tiles.baseDysentery);
+    //            if (Random.Range(0, 101) <= 100 - stability[r])
+    //            {
+    //                int distanceDys = Mathf.RoundToInt(Vector2Int.Distance(rel.SacredPlace.Pos, Pos) / Mathf.Max(GameManager.Inst.tiles.width, GameManager.Inst.tiles.height) * GameManager.Inst.tiles.baseDysentery);
 
-                    AddInfluence(rel, -Mathf.RoundToInt((rel.Dysentery + distanceDys + dysentery[rel.religion]) * relDyBonus));
-                }
-            }
-        }
+    //                AddInfluence(rel, -Mathf.RoundToInt((rel.Dysentery + distanceDys + dysentery[rel.religionType]) * relDyBonus));
+    //            }
+    //        }
+    //    }
 
-        for(int i = CoinBonus.Count - 1; i > 0; i--)
-        {
-            float[] t = CoinBonus[i];
-            t[1]--;
-            if (Mathf.RoundToInt(t[1]) == 0)
-            {
-                CoinBonus.RemoveAt(i);
-            }
-        }
-        for(int i = SunlightBonus.Count - 1; i > 0; i--)
-        {
-            float[] t = SunlightBonus[i];
-            t[1]--;
-            if (Mathf.RoundToInt(t[1]) == 0)
-            {
-                SunlightBonus.RemoveAt(i);
-            }
-        }
+    //    for(int i = CoinBonus.Count - 1; i > 0; i--)
+    //    {
+    //        float[] t = CoinBonus[i];
+    //        t[1]--;
+    //        if (Mathf.RoundToInt(t[1]) == 0)
+    //        {
+    //            CoinBonus.RemoveAt(i);
+    //        }
+    //    }
+    //    for(int i = SunlightBonus.Count - 1; i > 0; i--)
+    //    {
+    //        float[] t = SunlightBonus[i];
+    //        t[1]--;
+    //        if (Mathf.RoundToInt(t[1]) == 0)
+    //        {
+    //            SunlightBonus.RemoveAt(i);
+    //        }
+    //    }
 
-        if (mainReligion.Tech[2, 0])
-        {
-            CoinBonus.Add(new float[] { 0.7f, 1.0f });
-        }
+    //    if (mainReligion.Tech[2, 0])
+    //    {
+    //        CoinBonus.Add(new float[] { 0.7f, 1.0f });
+    //    }
 
-        if (mainReligion.Tech[3,2])
-        {
-            badPer -= 5;
-        }
+    //    if (mainReligion.Tech[3,2])
+    //    {
+    //        badPer -= 5;
+    //    }
 
-        if (condition == TileCondition.Bad && mainReligion.Tech[4, 1])
-        {
-            goodPer += 20;
-        }
+    //    if (condition == TileCondition.Bad && mainReligion.Tech[4, 1])
+    //    {
+    //        goodPer += 20;
+    //    }
 
-        findTechBonus = 1.0f;
+    //    findTechBonus = 1.0f;
 
-        if (mainReligion.Tech[5, 0] && mainReligion.SacredPlace == this && stability[mainReligion.religion] >= 80)
-        {
-            nextCondition = TileCondition.Good;
-        }
+    //    if (mainReligion.Tech[5, 0] && mainReligion.SacredPlace == this && stability[mainReligion.religionType] >= 80)
+    //    {
+    //        nextCondition = TileCondition.Good;
+    //    }
 
-        History.Add(mainReligion.religion);
-    }
+    //    History.Add(mainReligion.religionType);
+    //}
     public void Refresh()
     {
         int[] prod = CalcProduct();
@@ -291,7 +291,7 @@ public class Tile:MonoBehaviour
         {
             mainReligion.Sunlight++;
         }
-        if (mainReligion.religion != Religions.none)
+        if (mainReligion.religionType != ReligionType.none)
         {
             if (mainReligion.Tech[0, 3] && Random.Range(0f, 1f) <= 0.2f)
             {
@@ -350,140 +350,140 @@ public class Tile:MonoBehaviour
     public void AddInfluence(Religion rel, int val)
     {
         val = Mathf.Min(val, GameManager.Inst.tiles.MaxInfluence);
-        influence[rel.religion] += val;
-        if (!met.Contains(rel.religion))
+        influence[rel.religionType] += val;
+        if (!met.Contains(rel.religionType))
         {
             AddStability(rel, 100);
-            met.Add(rel.religion);
+            met.Add(rel.religionType);
         }
         else
         {
             AddStability(rel, Random.Range(20, 51));
         }
-        influence[rel.religion] = Mathf.Clamp(influence[rel.religion], 0, GameManager.Inst.tiles.MaxInfluence);
+        influence[rel.religionType] = Mathf.Clamp(influence[rel.religionType], 0, GameManager.Inst.tiles.MaxInfluence);
     }
     public void AddStability(Religion rel, int val)
     {
-        if (!stability.ContainsKey(rel.religion))
+        if (!stability.ContainsKey(rel.religionType))
         {
-            stability.Add(rel.religion, val);
+            stability.Add(rel.religionType, val);
         }
         else
         {
-            stability[rel.religion] += val;
+            stability[rel.religionType] += val;
         }
         if (rel.Tech[0, 0])
-            stability[rel.religion] = Mathf.Clamp(stability[rel.religion], 10, 100);
+            stability[rel.religionType] = Mathf.Clamp(stability[rel.religionType], 10, 100);
         else
-            stability[rel.religion] = Mathf.Clamp(stability[rel.religion], 0, 100);
+            stability[rel.religionType] = Mathf.Clamp(stability[rel.religionType], 0, 100);
     }
-    public void SetReligion(Religion religion)
-    {
-        foreach (Religion rels in GameManager.Inst.tiles.religions)
-        {
-            if (rels.Tech[3, 4])
-            {
-                foreach (Religion r in GameManager.Inst.tiles.religions)
-                {
-                    if (r == rels)
-                        continue;
-                    dysentery[r.religion] += 5;
-                }
-            }
-        }
+    //public void SetReligion(Religion religion)
+    //{
+    //    foreach (Religion rels in GameManager.Inst.tiles.religions)
+    //    {
+    //        if (rels.Tech[3, 4])
+    //        {
+    //            foreach (Religion r in GameManager.Inst.tiles.religions)
+    //            {
+    //                if (r == rels)
+    //                    continue;
+    //                dysentery[r.religionType] += 5;
+    //            }
+    //        }
+    //    }
 
-        if (mainReligion.religion != Religions.none)
-        {
-            if (mainReligion.religion == GameManager.Inst.tiles.usingMiracle?[Miracle.Judgement])
-            {
-                Judgement = true;
-            }
-            if (religion.religion == GameManager.Inst.tiles.usingMiracle?[Miracle.Judgement])
-            {
-                Judgement = false;
-            }
-        }
+    //    if (mainReligion.religionType != ReligionType.none)
+    //    {
+    //        if (mainReligion.religionType == GameManager.Inst.tiles.usingMiracle?[Miracle.Judgement])
+    //        {
+    //            Judgement = true;
+    //        }
+    //        if (religion.religionType == GameManager.Inst.tiles.usingMiracle?[Miracle.Judgement])
+    //        {
+    //            Judgement = false;
+    //        }
+    //    }
 
-        if(mainReligion != null)
-        {
-            if(Sacred.gameObject.activeSelf)
-            {
-                for(int i = 0; i<History.Count; i++)
-                {
-                    if (History[i] != History[0])
-                    {
-                        if (i == GameManager.Inst.tiles.Turn)
-                        {
-                            religion.TechPoint++;
-                        }
-                        break;
-                    }
-                }
-            }
-            mainReligion?.GetTiles.Remove(this);
-            if (mainReligion.religion != Religions.none)
-            {
-                if(mainReligion.GetTiles.Count == 0)
-                {
-                    GameManager.Inst.tiles.religions.Remove(mainReligion);
-                    GameManager.Inst.tiles.religionsOrder.Remove(mainReligion.religion);
-                    foreach (Tile tile in GameManager.Inst.tiles.tiles)
-                    {
-                        if (tile.mainReligion == mainReligion)
-                        {
-                            tile.SetReligion(null);
-                        }
-                        tile.influence.Remove(mainReligion.religion);
-                        if (tile.stability.ContainsKey(mainReligion.religion))
-                        {
-                            tile.stability.Remove(mainReligion.religion);
-                        }
-                    }
-                }
-                if (religion.Tech[1,2])
-                {
-                    for (int i = Mathf.Max(0, Pos.y - 5); i <= Mathf.Min(GameManager.Inst.tiles.height - 1, Pos.y + 5); i++)
-                    {
-                        for (int j = Mathf.Max(0, Pos.x - 5); j <= Mathf.Min(GameManager.Inst.tiles.width - 1, Pos.x + 5); j++)
-                        {
-                            if (Mathf.Abs(Pos.y - i) + Mathf.Abs(Pos.x - j) <= 5)
-                            {
-                                SunlightBonus.Add(new float[2] { 1.1f, 1.0f});
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if(religion == null)
-        {
-            mainReligion = null;
-            Symbol.sprite = null;
-            SetFog(religion);
-            Sacred.gameObject.SetActive(false);
-            return;
-        }
-        mainReligion = religion;
-        Symbol.sprite = religion.symbol;
-        mainReligion.GetTiles.Add(this);
-        SetFog(religion);
+    //    if(mainReligion != null)
+    //    {
+    //        if(Sacred.gameObject.activeSelf)
+    //        {
+    //            for(int i = 0; i<History.Count; i++)
+    //            {
+    //                if (History[i] != History[0])
+    //                {
+    //                    if (i == GameManager.Inst.tiles.Turn)
+    //                    {
+    //                        religion.TechPoint++;
+    //                    }
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //        mainReligion?.GetTiles.Remove(this);
+    //        if (mainReligion.religionType != ReligionType.none)
+    //        {
+    //            if(mainReligion.GetTiles.Count == 0)
+    //            {
+    //                GameManager.Inst.tiles.religions.Remove(mainReligion);
+    //                GameManager.Inst.tiles.religionsOrder.Remove(mainReligion.religionType);
+    //                foreach (Tile tile in GameManager.Inst.tiles.tiles)
+    //                {
+    //                    if (tile.mainReligion == mainReligion)
+    //                    {
+    //                        tile.SetReligion(null);
+    //                    }
+    //                    tile.influence.Remove(mainReligion.religionType);
+    //                    if (tile.stability.ContainsKey(mainReligion.religionType))
+    //                    {
+    //                        tile.stability.Remove(mainReligion.religionType);
+    //                    }
+    //                }
+    //            }
+    //            if (religion.Tech[1,2])
+    //            {
+    //                for (int i = Mathf.Max(0, Pos.y - 5); i <= Mathf.Min(GameManager.Inst.tiles.height - 1, Pos.y + 5); i++)
+    //                {
+    //                    for (int j = Mathf.Max(0, Pos.x - 5); j <= Mathf.Min(GameManager.Inst.tiles.width - 1, Pos.x + 5); j++)
+    //                    {
+    //                        if (Mathf.Abs(Pos.y - i) + Mathf.Abs(Pos.x - j) <= 5)
+    //                        {
+    //                            SunlightBonus.Add(new float[2] { 1.1f, 1.0f});
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //    if(religion == null)
+    //    {
+    //        mainReligion = null;
+    //        Symbol.sprite = null;
+    //        SetFog(religion);
+    //        Sacred.gameObject.SetActive(false);
+    //        return;
+    //    }
+    //    mainReligion = religion;
+    //    Symbol.sprite = religion.symbol;
+    //    mainReligion.GetTiles.Add(this);
+    //    SetFog(religion);
 
-        if (mainReligion.SacredPlace == this)
-        {
-            Sacred.gameObject.SetActive(true);
-        }
+    //    if (mainReligion.SacredPlace == this)
+    //    {
+    //        Sacred.gameObject.SetActive(true);
+    //    }
 
-        if (religion.Tech[3, 5])
-        {
-            servRel.Add(religion);
-            foreach(Religion rels in GameManager.Inst.tiles.religions)
-            {
-                if (rels == religion)
-                    continue;
-                dysentery[rels.religion] += 25;
-            }
-        }
-    }
+    //    if (religion.Tech[3, 5])
+    //    {
+    //        servRel.Add(religion);
+    //        foreach(Religion rels in GameManager.Inst.tiles.religions)
+    //        {
+    //            if (rels == religion)
+    //                continue;
+    //            dysentery[rels.religionType] += 25;
+    //        }
+    //    }
+    //}
     public void SetFog(Religion rel)
     {
         for (int i = Mathf.Max(0, Pos.y - rel.TorchRange); i <= Mathf.Min(GameManager.Inst.tiles.height - 1, Pos.y + rel.TorchRange); i++)
@@ -492,37 +492,37 @@ public class Tile:MonoBehaviour
             {
                 if (Mathf.Abs(Pos.y - i) + Mathf.Abs(Pos.x - j) <= rel.TorchRange)
                 {
-                    GameManager.Inst.tiles.tiles[i, j].SetFog(rel, mainReligion.religion != rel.religion);
+                    GameManager.Inst.tiles.tiles[i, j].SetFog(rel, mainReligion.religionType != rel.religionType);
                 }
             }
         }
     }
     public void SetFog(Religion rel, bool fogOn)
     {
-        if(!fogBool.ContainsKey(rel.religion))
+        if(!fogBool.ContainsKey(rel.religionType))
         {
-            fogBool.Add(rel.religion, new());
+            fogBool.Add(rel.religionType, new());
         }
         if (!fogOn)
         {
-            fogBool[rel.religion].Add(fogOn);
-            if(rel.religion == GameManager.Inst.tiles.playerRel)
+            fogBool[rel.religionType].Add(fogOn);
+            if(rel.religionType == GameManager.Inst.tiles.playerRel)
             {
                 HideBox.gameObject.SetActive(false);
             }
-            if(!rel.TorchedTile.Contains(this))
-                rel.TorchedTile.Add(this);
+            if(!rel.TempTorchedTile.Contains(this))
+                rel.TempTorchedTile.Add(this);
         }
         else
         {
-            if (fogBool[rel.religion].Count > 0)
+            if (fogBool[rel.religionType].Count > 0)
             {
-                fogBool[rel.religion].RemoveAt(0);
+                fogBool[rel.religionType].RemoveAt(0);
             }
             if (fogBool[GameManager.Inst.tiles.playerRel].Count == 0)
             {
                 HideBox.gameObject.SetActive(true);
-                rel.TorchedTile.Remove(this);
+                rel.TempTorchedTile.Remove(this);
             }
         }
     }

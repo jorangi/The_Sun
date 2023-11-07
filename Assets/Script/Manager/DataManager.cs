@@ -8,7 +8,7 @@ public enum TileCondition
     Good,
     Bad
 }
-public enum Religions
+public enum ReligionType
 {
     none,
     TheSun,

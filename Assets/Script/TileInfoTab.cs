@@ -14,13 +14,13 @@ public class TileInfoTab : MonoBehaviour
         Coord.text = $"{tile.Pos.x}, {tile.Pos.y}";
         Influence.text = $"[영향력]<br>";
         Stability.text = $"[안정]<br>";
-        foreach (KeyValuePair<Religions, int> val in tile.influence)
+        foreach (KeyValuePair<ReligionType, int> val in tile.influence)
         {
             Influence.text += $"({val.Key}, {val.Value}) ";
             if (val.Key != GameManager.Inst.tiles.playerRel)
                 max += val.Value;
         }
-        foreach (KeyValuePair<Religions, int> val in tile.stability)
+        foreach (KeyValuePair<ReligionType, int> val in tile.stability)
         {
             Stability.text += $"({val.Key}, {val.Value}) ";
         }
@@ -29,7 +29,7 @@ public class TileInfoTab : MonoBehaviour
             float p = 0;
             if(tile.Sacred.gameObject.activeSelf)
             {
-                p =(float)tile.influence[GameManager.Inst.tiles.playerRel] - tile.influence[tile.mainReligion.religion] / GameManager.Inst.tiles.MaxInfluence * 100;
+                p =(float)tile.influence[GameManager.Inst.tiles.playerRel] - tile.influence[tile.mainReligion.religionType] / GameManager.Inst.tiles.MaxInfluence * 100;
             }
             else
             {

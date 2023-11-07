@@ -18,7 +18,7 @@ public class SaintCrown : Relic
         bool a = false;
         foreach(Tile tile in tiles.tiles)
         {
-            if(tile.mainReligion.religion == Religions.none)
+            if(tile.mainReligion.religionType == ReligionType.none)
             {
                 a = true;
                 break;
@@ -29,7 +29,7 @@ public class SaintCrown : Relic
             do
             {
                 t = tiles.tiles[Random.Range(0, tiles.height), Random.Range(0, tiles.width)];
-            } while (t.mainReligion.religion != Religions.none);
+            } while (t.mainReligion.religionType != ReligionType.none);
 
             GameManager.Inst.tiles.AddTile(owner, t);
         }

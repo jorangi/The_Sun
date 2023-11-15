@@ -63,7 +63,6 @@
     <Compile Include="Assets\Script\Relics\EternalTorch.cs" />
     <Compile Include="Assets\Script\Observer.cs" />
     <Compile Include="Assets\Script\Relics\GuardCharm.cs" />
-    <Compile Include="Assets\Script\TileInfoTab.cs" />
     <Compile Include="Assets\Script\Relics\SaintStaff.cs" />
     <Compile Include="Assets\Script\Relics\GoldenEye.cs" />
     <Compile Include="Assets\Script\Manager\GameManager.cs" />
@@ -76,6 +75,7 @@
     <Compile Include="Assets\Script\Relics\NoWitherFlower.cs" />
     <Compile Include="Assets\Script\Relics\SaintCrown.cs" />
     <Compile Include="Assets\Script\Relics\BotaniBracelet.cs" />
+    <Compile Include="Assets\Script\TileData.cs" />
     <Compile Include="Assets\Script\Manager\DataManager.cs" />
     <Compile Include="Assets\Script\Tiles.cs" />
     <Compile Include="Assets\Script\TechButton.cs" />

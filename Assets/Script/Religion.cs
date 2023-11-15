@@ -5,10 +5,8 @@ using TMPro;
 
 public class TheSun : Religion
 {
-    public TheSun(ReligionType relT, Vector2Int startPlace):base(relT, startPlace)
+    public TheSun(ReligionType relT, Vector2Int startPlace, Sprite symbol):base(relT, startPlace, symbol)
     {
-        this.religionType = relT;
-        this.sacredPlace = startPlace;
         miracles.Add(Miracle.RisingSun);
     }
     public override void UseMiracle(Miracle miralce)
@@ -48,7 +46,7 @@ public class TechList
 }
 public class ReligionAssets
 {
-    private UIManager ui;
+    private readonly UIManager ui;
     private int coin = 10;
     public int Coin
     {
@@ -80,7 +78,8 @@ public abstract class Religion
     [SerializeField]
     private UIManager ui;
     protected Vector2Int sacredPlace;
-    public List<Vector2Int> TorchedTile;
+    public Vector2Int mapSize;
+    public List<TileData> TorchedTile = new();
     public List<TileData> HasTiles = new();
 
     public ReligionAssets assets;
@@ -120,10 +119,9 @@ public abstract class Religion
     public List<HolyRelic> relics = new();
     public List<Miracle> miracles = new();
     public ReligionType religionType;
-    //public List<Tile> GetTiles = new();
     public Color religionColor;
     public Sprite symbol;
-    private int torchRange;
+    private int torchRange = 5;
     public int TorchRange
     {
         get => torchRange;
@@ -137,12 +135,37 @@ public abstract class Religion
         }
     }
     public bool isSnakeVenom;
-    //public List<Tile> knownRelicTile = new();
-    //public List<Tile> TempTorchedTile = new();
-
-    public bool CheckContainShowedTile(TileData tileData) => TorchedTile.Contains(tileData.POS);
-    public Religion(ReligionType relT, Vector2Int startPlace)
+    public void AddTile(TileData tileData)
     {
+        tileData.Subjugate(religionType, symbol);
+        HasTiles.Add(tileData);
+        Unfogging(tileData, torchRange);
+    }
+    public void Unfogging(TileData tileData, int rangeCount)
+    {
+        if (rangeCount == 0) return;
+        tileData.gameObject.GetComponentInChildren<TextMeshPro>().text = rangeCount.ToString();
+        rangeCount--;
+        if (!tileData.ReligionsDataInTile.ContainsKey(religionType))
+            tileData.ReligionsDataInTile.Add(religionType, new ReligionDataInTile(religionType, tileData.gameObject));
+        tileData.ReligionsDataInTile[religionType].Unfogging = true;
+        TorchedTile.Add(tileData);
+
+        foreach (TileData near in tileData.nearTile)
+        {
+            if (near != null)
+            {
+                if(!near.ReligionsDataInTile.ContainsKey(religionType)) 
+                    near.ReligionsDataInTile.Add(religionType, new ReligionDataInTile(religionType, near.gameObject));
+                if(!near.ReligionsDataInTile[religionType].Unfogging) 
+                    Unfogging(near, rangeCount);
+            }
+        }
+    }
+    public bool CheckContainShowedTile(TileData tileData) => TorchedTile.Contains(tileData);
+    public Religion(ReligionType relT, Vector2Int startPlace, Sprite symbol)
+    {
+        this.symbol = symbol;
         this.religionType = relT;
         this.sacredPlace = startPlace;
     }

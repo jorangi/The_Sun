@@ -17,10 +17,36 @@ public class UI
     public void ChangeUI<T>(T arg)
     {
         if(arg is Sprite) Image.sprite = arg as Sprite;
-        else Text.text = string.Format("0,000", arg);
+        else Text.text = arg.ToString();
+    }
+}
+public class ValueUI : UI
+{
+    public ValueUI(TextMeshProUGUI text = null, Image image = null):base(text, image){}
+    public void ChangeUI(string arg)
+    {
+        Text.text = string.Format("0,000", arg);
     }
 }
 #endregion
+public class TileInfoUI
+{
+    private UI PositionUI;
+    private UI Context;
+    public TileInfoUI(TextMeshProUGUI p, TextMeshProUGUI c)
+    {
+        PositionUI = new(p);
+        Context = new(c);
+    }
+    public void SetPosition(Vector2Int pos)
+    {
+        PositionUI.ChangeUI($"({pos.x}, {pos.y})");
+    }
+    public void SetContext(TileData tileData)
+    {
+        Context.ChangeUI($"[영향력]<br>[안정]<br>[점령확률]");
+    }
+}
 public class UIManager : MonoBehaviour
 {
     public Religion player;
@@ -32,14 +58,16 @@ public class UIManager : MonoBehaviour
     private Image turnedReligion;
     #endregion
     #region UIObject
-    public UI coinUI, sunlightUI, turnUI, turnActUI, turnedReligionUI, logicUI, idealUI;
+    public ValueUI coinUI, sunlightUI, turnUI, turnActUI, logicUI, idealUI;
+    public UI turnedReligionUI;
+    public TileInfoUI TileInfo;
     #endregion
     public void OnEnable()
     {
-        coinUI = new UI(coinText);
-        sunlightUI = new UI(sunlightText);
-        turnUI = new UI(coinText);
-        turnActUI = new UI(coinText);
-        turnedReligionUI = new UI(null, turnedReligion);
+        coinUI = new ValueUI(coinText);
+        sunlightUI = new ValueUI(sunlightText);
+        turnUI = new ValueUI(coinText);
+        turnActUI = new ValueUI(coinText);
+        turnedReligionUI = new ValueUI(null, turnedReligion);
     }
 }

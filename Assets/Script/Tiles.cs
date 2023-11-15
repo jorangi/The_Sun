@@ -4,142 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
-public class ReligionDataInTile
-{
-    private ReligionType religionType;
-    private SpriteRenderer fogSprite;
-    private int dysentery;
-    public int Dysentery
-    {
-        get => dysentery;
-        set => dysentery = value;
-    }
-    private int influence;
-    public int Influence
-    {
-        get => influence;
-        set => influence = value;
-    }
-    private int autoOcc;
-    public int AutoOcc
-    {
-        get => autoOcc;
-        set => autoOcc = value;
-    }
-    private bool serveidRel;
-    public bool ServeidRel
-    {
-        get => serveidRel;
-        set => serveidRel = value;
-    }
-    private bool unfogging;
-    public bool Unfogging
-    {
-        get => unfogging;
-        set
-        {
-            unfogging = value;
-            fogSprite.enabled = (religionType == ReligionType.TheSun) && value;
-        }
-    }
-    public ReligionDataInTile(ReligionType religionType, GameObject obj)
-    {
-        this.religionType = religionType;
-        fogSprite = obj.GetComponent<SpriteRenderer>();
-    }
-}
-public class TileProduction
-{
-    private SpriteRenderer statusSprite;
-    private TextMeshPro goldProductText, sunlightProductText;
-    private int goldProduct;
-    public int GoldProduct
-    {
-        get => goldProduct;
-        set
-        {
-            goldProduct = value;
-            goldProductText.text = $"{value}";
-        }
-    }
-    private int sunlightProduct;
-    public int SunlightProduct
-    {
-        get => sunlightProduct;
-        set
-        {
-            sunlightProduct = value;
-            sunlightProductText.text = $"{value}";
-        }
-    }
-    private int totalProductedGold, totalProductedSunlight;
-
-    private bool? status;//null : normal, true : good, false : bad
-    public bool? Status
-    {
-        get => status;
-        set
-        {
-            status = value;
-            switch (value)
-            {
-                case true:
-                    statusSprite.color = Color.green; break;
-                case false:
-                    statusSprite.color = Color.red; break;
-                default:
-                    statusSprite.color = Color.white; break;
-
-            }
-        }
-    }
-    public TileProduction(GameObject obj)
-    {
-        goldProductText = obj.GetComponent<TextMeshPro>();
-        sunlightProductText = obj.GetComponent<TextMeshPro>();
-    }
-    public void Product()
-    {
-        totalProductedGold += goldProduct;
-        totalProductedSunlight += sunlightProduct;
-    }
-}
-public class TileData
-{
-    public TileProduction Production;
-    public GameObject gameObject;
-    private SpriteRenderer symbolSprite, sacredSymbol;
-    private ReligionType settedRel;
-    public ReligionType SettedRel
-    {
-        get => settedRel;
-        set => settedRel = value;
-    }
-    private Vector2Int pos;
-    public Vector2Int POS
-    {
-        get => pos;
-        set => pos = value;
-    }
-    private bool sacredPlace;
-    public bool SacredPlace
-    {
-        get => sacredPlace;
-        set
-        {
-            sacredPlace = value;
-            sacredSymbol.gameObject.SetActive(value);
-        }
-    }
-    public Dictionary<ReligionType, ReligionDataInTile> ReligionsDataInTile = new();
-    public TileData(Vector2Int pos, GameObject obj)
-    {
-        POS = pos;
-        gameObject = obj;
-        Production = new(obj);
-    }
-}
 public class Tiles : MonoBehaviour
 {
     #region field
@@ -220,7 +84,6 @@ public class Tiles : MonoBehaviour
     public int BlockedFate = 0;
     public int FixedFate = 0;
     #endregion
-
     private void Awake()
     {
         Init();
@@ -312,6 +175,19 @@ public class Tiles : MonoBehaviour
                 tileDatas[i, j] = new TileData(new Vector2Int(j, i), obj);
                 obj.transform.position = new(-boxSize.x / 2 + j, boxSize.y / 2 - i);
                 obj.name = $"{j}|{i}";
+            }
+        }
+
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                TileData[] nears = new TileData[4];
+                nears[0] = j < width - 1 ? tileDatas[i, j+1] : null;
+                nears[1] = j > 0 ? tileDatas[i, j-1] : null;
+                nears[2] = i < height - 1 ? tileDatas[i+1, j] : null;
+                nears[3] = i > 0 ? tileDatas[i-1, j] : null;
+                tileDatas[i, j].nearTile = nears;
             }
         }
         player = ReligionDataSetup(ReligionType.TheSun);
@@ -435,12 +311,11 @@ public class Tiles : MonoBehaviour
         switch (religionType)
         {
             case ReligionType.TheSun:
-                religion = new TheSun(ReligionType.TheSun, tile.POS);
+                religion = new TheSun(ReligionType.TheSun, tile.POS, symbols[(int)religionType - 1]);
                 religion.GetMiracle(Miracle.RisingSun);
                 break;
         }
-        tile.ReligionsDataInTile.Add(religionType, new(religionType, tile.gameObject) { Unfogging = true, Influence = MaxInfluence });
-        religion.HasTiles.Add(tile);
+        tile.ReligionsDataInTile.Add(religionType, new(religionType, tile.gameObject) { Influence = MaxInfluence });
         AddTile(religion, tile);
         tile.ReligionsDataInTile[religion.religionType].Influence = MaxInfluence;
         ReligionDic.Add(religionType, religion);
@@ -455,8 +330,7 @@ public class Tiles : MonoBehaviour
     public void AddTile(Religion religion, TileData tileData)
     {
         tileData.SacredPlace = religion.HasTiles.Count == 0;
-        tileData.SettedRel = religion.religionType;
-        religion.HasTiles.Add(tileData);
+        religion.AddTile(tileData);
     }
     private void ShowTileMenu(TileData data)
     {

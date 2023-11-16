@@ -13,6 +13,7 @@ public class Tiles : MonoBehaviour
     public GameObject[] relicArray;
     public Button evanBtn, charityBtn, arguBtn, serRelBtn, buyRelBtn, occBtn;
     public TextMeshProUGUI coinText, sunlightText;
+    public UIManager ui;
 
     //게임 데이터 관련
     public Sprite[] symbols;
@@ -22,18 +23,18 @@ public class Tiles : MonoBehaviour
     public int CAMMIN = 100;
 
     //타일맵 관련
+    public ActsOnTile actsOnTile;
     public TileData[,] tileDatas;
     private Vector2 mousePos;
+    private TileData SettedTile;
     private bool moveable = false;
     public int width, height;
     public float AvgTotalMadeCoin;
     public GameObject TilePrefab;
-    //public Tile[,] tiles;
-    //public Tile setTile;
     public Color goodTile, badTile, enableTile, disableTile, blockedTile;
 
     //게임 플레이 관련
-    private Religion player;
+    public static Religion player;
     private Religion bestRel;
     //private bool EternalTorchGet = false;
     public Religion miracleTargetRel = null;
@@ -98,9 +99,8 @@ public class Tiles : MonoBehaviour
 
             if (hit.collider != null)
             {
-                int x = (int)hit.transform.position.x;
-                int y = (int)hit.transform.position.y;
-                TileData t = tileDatas[(int)(height * 0.5f - y), (int)(width * 0.5f + x)];
+                string[] pos = hit.collider.gameObject.name.Split('|');
+                TileData t = tileDatas[int.Parse(pos[1]), int.Parse(pos[0])];
                 ShowTileMenu(t);
             }
         }
@@ -145,6 +145,7 @@ public class Tiles : MonoBehaviour
     }
     private void Init()
     {
+        actsOnTile = new();
         MiraclePrice = new int[] { 190, 210, 130, 250, 160, 90, 200, 155, 320, 225, 350, 195, 330 };
         for (int i = 1; i < System.Enum.GetValues(typeof(HolyRelic)).Length; i++)
         {
@@ -193,6 +194,10 @@ public class Tiles : MonoBehaviour
         player = ReligionDataSetup(ReligionType.TheSun);
         religions.Add(player);
 
+        foreach(TileData tileData in tileDatas) 
+        {
+            tileData.occpy.DisplayOccupiable(tileData);
+        }
         //테크 전부 오픈
         //for (int i = 0; i < 5; i++)
         //{
@@ -307,6 +312,7 @@ public class Tiles : MonoBehaviour
             tile = tileDatas[Random.Range(0, height), Random.Range(0, width)];
         } while (tile.SettedRel != ReligionType.none);
 
+        tile = tileDatas[height - 1, Random.Range(0, width)];
         Religion religion = null;
         switch (religionType)
         {
@@ -334,9 +340,12 @@ public class Tiles : MonoBehaviour
     }
     private void ShowTileMenu(TileData data)
     {
-        if (!player.CheckContainShowedTile(data)) return;
-        tileMenu.SetActive(true);
-        tileSelectable.Add(true);
+        SettedTile = data;
+        if (player.CheckContainShowedTile(data))
+        {
+            tileMenu.SetActive(true);
+            tileSelectable.Add(true);
+        }
     }
     public void ShowTooltip(int i)
     {
@@ -519,7 +528,7 @@ public class Tiles : MonoBehaviour
     }
     public void ShowTileInfoTab()
     {
-        //GameManager.Inst.infoTab.SetUp(setTile);
+        ui.ShowTileInfo(SettedTile);
     }
     public void GetRelic(Religion rel, HolyRelic relic)
     {

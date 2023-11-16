@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public Gradient OccLv;
     public TMPro.TMP_FontAsset mainFont;
     public GameObject LogBox;
     public GameObject Logs;
     //public TileInfoTab infoTab;
     public Tooltip tooltip;
     public Tiles tiles;
-    public DataManager dataManager;
     public float gameSpeed;
+    public int MaxInfluence = 20;
     private static GameManager instance;
     public static GameManager Inst
     {
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         Application.targetFrameRate = 120;
         gameSpeed = 1f;
+        DataManager.OccLv = OccLv;
     }
     public void ShowTooltip(string text)
     {

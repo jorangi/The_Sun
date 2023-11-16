@@ -57,6 +57,7 @@ public enum Miracle
     Judgement,
     ForesightDream
 }
-public class DataManager : MonoBehaviour
+public class DataManager
 {
+    public static Gradient OccLv;
 }

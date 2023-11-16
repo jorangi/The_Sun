@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
 public class ReligionDataInTile
 {
     private ReligionType religionType;
@@ -19,7 +18,21 @@ public class ReligionDataInTile
     public int Influence
     {
         get => influence;
-        set => influence = value;
+        set
+        {
+            value = Mathf.Clamp(value, 0, 100);
+            influence = value;
+        }
+    }
+    private int stability;
+    public int Stability
+    {
+        get => stability;
+        set
+        {
+            value = Mathf.Clamp(value, 0, 100);
+            stability = value;
+        }
     }
     private int autoOcc;
     public int AutoOcc
@@ -40,7 +53,7 @@ public class ReligionDataInTile
         set
         {
             unfogging = value;
-            fogSprite.enabled = religionType != ReligionType.TheSun || !value;
+            fogSprite.enabled = !value;
         }
     }
     public ReligionDataInTile(ReligionType religionType, GameObject obj)
@@ -73,7 +86,7 @@ public class TileProduction
             sunlightProductText.text = $"{value}";
         }
     }
-    private int totalProductedGold, totalProductedSunlight;
+    public int totalProductedGold, totalProductedSunlight;
 
     private bool? status;//null : normal, true : good, false : bad
     public bool? Status
@@ -98,6 +111,7 @@ public class TileProduction
     {
         goldProductText = obj.transform.Find("Coin").GetComponent<TextMeshPro>();
         sunlightProductText = obj.transform.Find("Sunlight").GetComponent<TextMeshPro>();
+        statusSprite = obj.GetComponent<SpriteRenderer>();
     }
     public void Product()
     {
@@ -105,12 +119,49 @@ public class TileProduction
         totalProductedSunlight += sunlightProduct;
     }
 }
+public class OccupyTile
+{
+    private SpriteRenderer renderer;
+    public OccupyTile(SpriteRenderer TileRenderer)
+    {
+        renderer = TileRenderer;
+    }
+    public void DisplayOccupiable(TileData data)
+    {
+        if (data.SettedRel == Tiles.player.religionType)
+        {
+            renderer.color = Color.white;
+            return;
+        }
+        int den = 0;
+        int num = 0;
+        int max = 0;
+        foreach(KeyValuePair<ReligionType, ReligionDataInTile> d in data.ReligionsDataInTile)
+        {
+            max = Mathf.Max(max, d.Value.Influence);
+            if(d.Key == Tiles.player.religionType)
+            {
+                num = d.Value.Influence;
+            }
+            else
+            {
+                den += d.Value.Influence;
+            }
+        }
+        den += max;
+
+        float r = den == 0 ? 1 : num / den;
+        renderer.color = GameManager.Inst.OccLv.Evaluate(r);
+        //renderer.color = GameManager.Inst.OccLv.Evaluate(Random.Range(0.0f, 1.0f));
+    }
+}
 public class TileData
 {
+    public OccupyTile occpy;
     public TileData[] nearTile = new TileData[4];//EWSN
     public TileProduction Production;
     public GameObject gameObject;
-    private SpriteRenderer symbolSprite, sacredSymbol;
+    private SpriteRenderer symbolSprite, sacredSymbol, ExistableRelic;
     private ReligionType settedRel;
     public ReligionType SettedRel
     {
@@ -140,11 +191,28 @@ public class TileData
         gameObject = obj;
         symbolSprite = obj.transform.Find("Symbol").GetComponent<SpriteRenderer>();
         sacredSymbol = obj.transform.Find("Sacred").GetComponent<SpriteRenderer>();
+        occpy = new OccupyTile(obj.transform.Find("InnerSquare").GetComponent<SpriteRenderer>());
+        ExistableRelic = obj.transform.Find("ExistableRelic").GetComponent<SpriteRenderer>();
         Production = new(obj);
+        ProductionChange();
     }
     public void Subjugate(ReligionType religionType, Sprite symbol)
     {
         SettedRel = religionType;
         symbolSprite.sprite = symbol;
+    }
+    public void ProductionChange()
+    {
+        int r = Random.Range(0, 101);
+        if (r >= 50)
+        {
+            Production.GoldProduct = 1;
+            Production.SunlightProduct = 1;
+        }
+        else
+        {
+            Production.GoldProduct = 0;
+            Production.SunlightProduct = 0;
+        }
     }
 }

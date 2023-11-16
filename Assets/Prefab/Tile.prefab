@@ -655,7 +655,7 @@ GameObject:
   - component: {fileID: 1243568395950788416}
   - component: {fileID: 8498684575580165382}
   m_Layer: 6
-  m_Name: TempRelic
+  m_Name: ExistableRelic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

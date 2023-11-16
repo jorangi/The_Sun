@@ -31,12 +31,14 @@ public class ValueUI : UI
 #endregion
 public class TileInfoUI
 {
+    private GameObject tileInfoUI;
     private UI PositionUI;
     private UI Context;
-    public TileInfoUI(TextMeshProUGUI p, TextMeshProUGUI c)
+    public TileInfoUI(GameObject tileInfoUI)
     {
-        PositionUI = new(p);
-        Context = new(c);
+        this.tileInfoUI = tileInfoUI;
+        PositionUI = new(tileInfoUI.transform.Find("position").GetComponent<TextMeshProUGUI>());
+        Context = new(tileInfoUI.transform.Find("context").GetComponent<TextMeshProUGUI>());
     }
     public void SetPosition(Vector2Int pos)
     {
@@ -44,7 +46,14 @@ public class TileInfoUI
     }
     public void SetContext(TileData tileData)
     {
-        Context.ChangeUI($"[영향력]<br>[안정]<br>[점령확률]");
+        string inf = "";
+        string sta = "";
+        foreach(KeyValuePair<ReligionType, ReligionDataInTile> d in tileData.ReligionsDataInTile)
+        {
+            inf += $"({d.Key} : {d.Value.Influence}) ";
+            sta += $"({d.Key} : {d.Value.Stability}) ";
+        }
+        Context.ChangeUI($"[영향력]<br>{inf}<br><br>[안정]<br>{sta}");
     }
 }
 public class UIManager : MonoBehaviour
@@ -56,6 +65,8 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI coinText, sunlightText, turnText, turnActText;
     [SerializeField]
     private Image turnedReligion;
+    [SerializeField]
+    private GameObject tileInfoUI;
     #endregion
     #region UIObject
     public ValueUI coinUI, sunlightUI, turnUI, turnActUI, logicUI, idealUI;
@@ -69,5 +80,20 @@ public class UIManager : MonoBehaviour
         turnUI = new ValueUI(coinText);
         turnActUI = new ValueUI(coinText);
         turnedReligionUI = new ValueUI(null, turnedReligion);
+        TileInfo = new TileInfoUI(tileInfoUI);
+    }
+    public void ShowTileInfo(TileData tileData)
+    {
+        TileInfo.SetPosition(tileData.POS);
+        TileInfo.SetContext(tileData);
+        tileInfoUI.SetActive(true);
+    }
+    public void Evangelize()
+    {
+
+    }
+    public void ShowCharityMenu()
+    {
+
     }
 }

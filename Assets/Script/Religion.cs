@@ -143,8 +143,7 @@ public abstract class Religion
     }
     public void Unfogging(TileData tileData, int rangeCount)
     {
-        if (rangeCount == 0) return;
-        tileData.gameObject.GetComponentInChildren<TextMeshPro>().text = rangeCount.ToString();
+        if (rangeCount < 0) return;
         rangeCount--;
         if (!tileData.ReligionsDataInTile.ContainsKey(religionType))
             tileData.ReligionsDataInTile.Add(religionType, new ReligionDataInTile(religionType, tileData.gameObject));
@@ -155,10 +154,9 @@ public abstract class Religion
         {
             if (near != null)
             {
-                if(!near.ReligionsDataInTile.ContainsKey(religionType)) 
+                if (!near.ReligionsDataInTile.ContainsKey(religionType)) 
                     near.ReligionsDataInTile.Add(religionType, new ReligionDataInTile(religionType, near.gameObject));
-                if(!near.ReligionsDataInTile[religionType].Unfogging) 
-                    Unfogging(near, rangeCount);
+            Unfogging(near, rangeCount);
             }
         }
     }

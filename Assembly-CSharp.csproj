@@ -69,6 +69,7 @@
     <Compile Include="Assets\Script\UIManager.cs" />
     <Compile Include="Assets\Script\Relics\MiracleDice.cs" />
     <Compile Include="Assets\Script\Religion.cs" />
+    <Compile Include="Assets\Script\ActsOnTile.cs" />
     <Compile Include="Assets\Script\Tooltip.cs" />
     <Compile Include="Assets\Script\Relic.cs" />
     <Compile Include="Assets\Script\Relics\WrittenStone.cs" />

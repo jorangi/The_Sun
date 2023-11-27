@@ -9,12 +9,13 @@ public class UI
 {
     protected TextMeshProUGUI Text;
     protected Image Image;
-    public UI(TextMeshProUGUI text = null, Image image = null)
+    public UI(TextMeshProUGUI text = null, Image image = null, GameObject DraggableParent = null)
     {
         Text = text;
         Image = image;
+        if (DraggableParent != null && DraggableParent.GetComponent<DraggableObject>() == null) DraggableParent.AddComponent<DraggableObject>();
     }
-    public void ChangeUI<T>(T arg)
+    public virtual void ChangeUI<T>(T arg)
     {
         if(arg is Sprite) Image.sprite = arg as Sprite;
         else Text.text = arg.ToString();
@@ -25,7 +26,7 @@ public class ValueUI : UI
     public ValueUI(TextMeshProUGUI text = null, Image image = null):base(text, image){}
     public void ChangeUI(string arg)
     {
-        Text.text = string.Format("0,000", arg);
+        Text.text = string.Format("{0:#,###}", arg);
     }
 }
 #endregion
@@ -56,6 +57,28 @@ public class TileInfoUI
         Context.ChangeUI($"[¿µÇâ·Â]<br>{inf}<br><br>[¾ÈÁ¤]<br>{sta}");
     }
 }
+public class CharityMenu:UI
+{
+    private GameObject charityMenu;
+    private UI getableInfToCharity;
+    private TMP_InputField input;
+    public CharityMenu(GameObject charityMenu)
+    {
+        this.charityMenu = charityMenu;
+        input = charityMenu.GetComponentInChildren<TMP_InputField>();
+        getableInfToCharity = new(charityMenu.transform.Find("CharityDetail").Find("GetInfluence").GetComponent<TextMeshProUGUI>());
+    }
+    public override void ChangeUI<T>(T arg)
+    {
+        getableInfToCharity.ChangeUI(arg);
+    }
+    public void ShowCharityMenu()
+    {
+        charityMenu.SetActive(!charityMenu.activeSelf);
+        input.text = string.Empty;
+        getableInfToCharity.ChangeUI($"È¹µæ ¿µÇâ·Â : {0}");
+    }
+}
 public class UIManager : MonoBehaviour
 {
     public Religion player;
@@ -66,12 +89,15 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image turnedReligion;
     [SerializeField]
-    private GameObject tileInfoUI;
+    private GameObject tileInfoUI, charityMenu;
+    public GameObject TileMenu;
     #endregion
     #region UIObject
     public ValueUI coinUI, sunlightUI, turnUI, turnActUI, logicUI, idealUI;
     public UI turnedReligionUI;
     public TileInfoUI TileInfo;
+    public CharityMenu Charity;
+    public Tooltip tooltip;
     #endregion
     public void OnEnable()
     {
@@ -81,6 +107,7 @@ public class UIManager : MonoBehaviour
         turnActUI = new ValueUI(coinText);
         turnedReligionUI = new ValueUI(null, turnedReligion);
         TileInfo = new TileInfoUI(tileInfoUI);
+        Charity = new CharityMenu(charityMenu);
     }
     public void ShowTileInfo(TileData tileData)
     {
@@ -88,12 +115,14 @@ public class UIManager : MonoBehaviour
         TileInfo.SetContext(tileData);
         tileInfoUI.SetActive(true);
     }
-    public void Evangelize()
-    {
-
-    }
     public void ShowCharityMenu()
     {
-
+        ShowToolTip(string.Empty);
+        Charity.ShowCharityMenu();
+        TileMenu.SetActive(!TileMenu.activeSelf);
+    }
+    public void ShowToolTip(string con)
+    {
+        tooltip.Text = con;
     }
 }

@@ -20,7 +20,7 @@ public class ReligionDataInTile
         get => influence;
         set
         {
-            value = Mathf.Clamp(value, 0, 100);
+            value = Mathf.Clamp(value, 0, GameManager.Inst.MaxInfluence);
             influence = value;
         }
     }
@@ -155,13 +155,36 @@ public class OccupyTile
         //renderer.color = GameManager.Inst.OccLv.Evaluate(Random.Range(0.0f, 1.0f));
     }
 }
+public class RelicInTile
+{
+    public SpriteRenderer ExistableRelic;
+    public HolyRelic relic;
+    public Dictionary <ReligionType, bool> surveidRelic = new();
+    public RelicInTile(SpriteRenderer ExistableRelic, HolyRelic relic = HolyRelic.none)
+    {
+        this.ExistableRelic = ExistableRelic;
+        this.relic = relic;
+        ExistableRelic.gameObject.SetActive(false);
+    }
+    public void Survey(Religion rel)
+    {
+        if (!surveidRelic.ContainsKey(rel.religionType))
+            surveidRelic.Add(rel.religionType, true);
+    }
+    public bool CheckSurveidByRel(Religion rel) => surveidRelic.ContainsKey(rel.religionType);
+    public void PurchaseRelic()
+    {
+
+    }
+}
 public class TileData
 {
+    public RelicInTile relic;
     public OccupyTile occpy;
     public TileData[] nearTile = new TileData[4];//EWSN
     public TileProduction Production;
     public GameObject gameObject;
-    private SpriteRenderer symbolSprite, sacredSymbol, ExistableRelic;
+    private SpriteRenderer symbolSprite, sacredSymbol;
     private ReligionType settedRel;
     public ReligionType SettedRel
     {
@@ -192,7 +215,7 @@ public class TileData
         symbolSprite = obj.transform.Find("Symbol").GetComponent<SpriteRenderer>();
         sacredSymbol = obj.transform.Find("Sacred").GetComponent<SpriteRenderer>();
         occpy = new OccupyTile(obj.transform.Find("InnerSquare").GetComponent<SpriteRenderer>());
-        ExistableRelic = obj.transform.Find("ExistableRelic").GetComponent<SpriteRenderer>();
+        relic = new(obj.transform.Find("ExistableRelic").GetComponent<SpriteRenderer>());
         Production = new(obj);
         ProductionChange();
     }

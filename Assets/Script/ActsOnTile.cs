@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ActsOnTile
 {
+    public UIManager ui;
     private TileData data;
     public TileData Data
     {
@@ -15,20 +16,22 @@ public class ActsOnTile
         if (!data.ReligionsDataInTile.ContainsKey(rel.religionType))
         {
             data.ReligionsDataInTile.Add(rel.religionType, new ReligionDataInTile(rel.religionType, data.gameObject));
-            data.ReligionsDataInTile[rel.religionType].Stability = 100;
         }
     }
     public void Evangelize(Religion rel)
     {
         FirstContact(rel);
-        data.ReligionsDataInTile[rel.religionType].Influence += rel.Ideal - rel.Dysentery;
-        data.ReligionsDataInTile[rel.religionType].Stability++;
+        ReligionDataInTile d = data.ReligionsDataInTile[rel.religionType];
+        d.Stability = d.Influence == 0 && d.Stability == 0 ? 100 : d.Stability+1;
+        d.Influence += rel.Ideal - rel.Dysentery;
+        //ui.ShowTileInfo(data);
     }
     public void Charity(Religion rel, int coin)
     {
         FirstContact(rel);
+        ReligionDataInTile d = data.ReligionsDataInTile[rel.religionType];
         int inf = Mathf.RoundToInt((float)coin / data.Production.GoldProduct * coin / data.Production.totalProductedGold * (data.Production.Status == false ? 2 : 1));
-        data.ReligionsDataInTile[rel.religionType].Influence += inf;
-        data.ReligionsDataInTile[rel.religionType].Stability++;
+        d.Stability = d.Influence == 0 && d.Stability == 0 ? 100 : d.Stability + 1;
+        d.Influence += inf;
     }
 }

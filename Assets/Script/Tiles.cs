@@ -145,7 +145,7 @@ public class Tiles : MonoBehaviour
     }
     private void Init()
     {
-        actsOnTile = new();
+        actsOnTile = new() { ui = this.ui};
         MiraclePrice = new int[] { 190, 210, 130, 250, 160, 90, 200, 155, 320, 225, 350, 195, 330 };
         for (int i = 1; i < System.Enum.GetValues(typeof(HolyRelic)).Length; i++)
         {
@@ -330,7 +330,7 @@ public class Tiles : MonoBehaviour
         obj.name = religion.religionType.ToString();
         obj.transform.GetChild(0).GetComponent<Image>().sprite = religion.symbol;
         obj.GetComponentInChildren<TextMeshProUGUI>().text = $"{1}";
-
+        religion.assets = new ReligionAssets(ui);
         return religion;
     }
     public void AddTile(Religion religion, TileData tileData)
@@ -341,100 +341,132 @@ public class Tiles : MonoBehaviour
     private void ShowTileMenu(TileData data)
     {
         SettedTile = data;
+        actsOnTile.Data = data;
         if (player.CheckContainShowedTile(data))
         {
-            tileMenu.SetActive(true);
+            ui.TileMenu.SetActive(true);
             tileSelectable.Add(true);
         }
     }
-    public void ShowTooltip(int i)
+    public void Evangelize()
     {
-        switch(i)
+        Evangelize(player);
+    }
+    public void Evangelize(Religion rel)
+    {
+        actsOnTile.Evangelize(rel);
+    }
+    public void Charity(TMP_InputField input)
+    {
+        Charity(player, int.Parse(input.text));
+    }
+    public void Charity(Religion rel, int coin)
+    {
+        actsOnTile.Charity(rel, coin);
+    }
+    public void CharityCalc(TMP_InputField input)
+    {
+        int val = 0;
+        ui.Charity.ChangeUI($"획득 영향력 : {val}");
+    }
+    public void CharityValueEndEdit(TMP_InputField input)
+    {
+        if (input.text == string.Empty) return;
+        int i = int.Parse(input.text);
+        i =  i > player.assets.Coin ? player.assets.Coin : i;
+        input.text = string.Format("{0:#,###}", i);
+        CharityCalc(input);
+    }
+    public void ShowToolTip(int i)
+    {
+        ReligionDataInTile d = SettedTile.ReligionsDataInTile[player.religionType];
+        string t = string.Empty;
+        switch (i)
         {
             default:
-                GameManager.Inst.ShowTooltip("");
                 break;
-            //case 1:
-            //    if (setTile.influence[playerRel] < 20)
-            //    {
-            //        GameManager.Inst.ShowTooltip($"전도를 하여 <color=#ffff00ff>{0}</color>만큼의 영향력을 높힙니다.");
-            //    }
-            //    else
-            //    {
-            //        GameManager.Inst.ShowTooltip($"영향력이 최대입니다. 전도를 통해 안정만을 획득할 수 있습니다.");
-            //    }
-            //    break;
-            //case 2:
-            //    if (setTile.influence[playerRel] < 20)
-            //    {
-            //        GameManager.Inst.ShowTooltip("기부를 하여 영향력을 높힙니다.");
-            //    }
-            //    else
-            //    {
-            //        GameManager.Inst.ShowTooltip($"영향력이 최대입니다. 전도를 통해 안정만을 획득할 수 있습니다.");
-            //    }
-            //    break;
-            //case 3:
-            //    GameManager.Inst.ShowTooltip("논쟁을 하여 상대방의 영향력을 낮추고 자신의 영향력을 높입니다.");
-            //    break;
-            //case 4:
-            //    if (!setTile.serveidRel[ReligionDic[playerRel]])
-            //    {
-            //        GameManager.Inst.ShowTooltip("해당 타일에서 성유물을 찾아냅니다.");
-            //    }
-            //    else
-            //    {
-            //        GameManager.Inst.ShowTooltip("해당 타일에서 성유물을 찾아냅니다.<br><color=#ff00ffff>해당 타일에서 성유물 조사를 이미 마쳤습니다.</color>");
-            //    }
-            //    break;
-            //case 5:
-            //    if (setTile.serveidRel[ReligionDic[playerRel]] && setTile.relic != HolyRelic.none)
-            //    {
-            //        int RelicPrice = 0;
+            case 1:
+                if (d.Influence < 20)
+                {
+                    t = $"전도를 하여 <color=#ffff00ff>{0}</color>만큼의 영향력을 높힙니다.";
+                }
+                else
+                {
+                    t = $"영향력이 최대입니다. 전도를 통해 안정만을 획득할 수 있습니다.";
+                }
+                break;
+            case 2:
+                if (d.Influence < 20)
+                {
+                    t = "기부를 하여 영향력을 높힙니다.\n기부 금액에 따라 획득 가능한 영향력이 달라집니다.\n획득 가능한 영향력은 해당 타일이 현재까지 생산한 코인 생산량에 따라 달라집니다.";
+                }
+                else
+                {
+                    t = $"영향력이 최대입니다. 전도를 통해 안정만을 획득할 수 있습니다.";
+                }
+                break;
+            case 3:
+                t = "논쟁을 하여 상대방의 영향력을 낮추고 자신의 영향력을 높입니다.";
+                break;
+            case 4:
+                if (!SettedTile.relic.CheckSurveidByRel(player))
+                {
+                    t = "해당 타일에서 성유물을 찾아냅니다.";
+                }
+                else
+                {
+                    t = "해당 타일에서 성유물을 찾아냅니다.<br><color=#ff00ffff>해당 타일에서 성유물 조사를 이미 마쳤습니다.</color>";
+                }
+                break;
+            case 5:
+                if (SettedTile.relic.CheckSurveidByRel(player) && SettedTile.relic.relic != HolyRelic.none)
+                {
+                    int RelicPrice = 0;
 
-            //        if (RelicPrice > ReligionDic[playerRel].Coin)
-            //        {
-            //            GameManager.Inst.ShowTooltip($"코인이 부족하여 성유물을 인수할 수 없습니다.<br>성유물의 가격이{RelicPrice}코인입니다.<br><color=#ff00ffff>{RelicPrice - ReligionDic[playerRel].Coin}만큼의 코인이 부족합니다.</color>");
-            //        }
-            //        else
-            //        {
-            //            GameManager.Inst.ShowTooltip($"<color=#ffff00ff>{RelicPrice}</color>코인을 지불하여 발견된 성유물을 인수합니다.");
-            //        }
-            //    }
-            //    else if(!setTile.serveidRel[ReligionDic[playerRel]])
-            //    {
-            //        GameManager.Inst.ShowTooltip("<color=#ff00ffff>해당 타일에 성유물이 존재하는지 알 수 없습니다.</color>");
-            //    }
-            //    else
-            //    {
-            //        GameManager.Inst.ShowTooltip("<color=#ff00ffff>해당 타일에 성유물이 존재하지 않습니다.</color>");
-            //    }
-            //    break;
-            //case 6:
-            //    if (setTile.mainReligion != religions[0])
-            //    {
-            //        if(!setTile.influence.ContainsKey(playerRel))
-            //        {
-            //            GameManager.Inst.ShowTooltip("<color=#ff00ffff>해당 타일에 영향력이 없습니다.</color>");
-            //        }
-            //        else
-            //        {
-            //            if (setTile.Sacred.gameObject.activeSelf)
-            //            {
-            //                GameManager.Inst.ShowTooltip($"해당 타일은 성지입니다.<br><color=#ff00ffff>{0}%</color> 확률로 점령을 시도합니다.");
-            //            }
-            //            else
-            //            {
-            //                GameManager.Inst.ShowTooltip($"<color=#ff00ffff>{0}%</color> 확률로 점령을 시도합니다.");
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        GameManager.Inst.ShowTooltip("<color=#ff00ffff>해당 타일은 이미 점령되었습니다.</color>");
-            //    }
-            //    break;
+                    if (RelicPrice > player.assets.Coin)
+                    {
+                        t = $"코인이 부족하여 성유물을 인수할 수 없습니다.<br>성유물의 가격이{RelicPrice}코인입니다.<br><color=#ff00ffff>{RelicPrice - player.assets.Coin}만큼의 코인이 부족합니다.</color>";
+                    }
+                    else
+                    {
+                        t = $"<color=#ffff00ff>{RelicPrice}</color>코인을 지불하여 발견된 성유물을 인수합니다.";
+                    }
+                }
+                else if (!SettedTile.relic.CheckSurveidByRel(player))
+                {
+                    t = "<color=#ff00ffff>해당 타일에 성유물이 존재하는지 알 수 없습니다.</color>";
+                }
+                else
+                {
+                    t = "<color=#ff00ffff>해당 타일에 성유물이 존재하지 않습니다.</color>";
+                }
+                break;
+            case 6:
+                if (SettedTile.SettedRel != player.religionType)
+                {
+                    if (d == null || d.Influence == 0)
+                    {
+                        t = "<color=#ff00ffff>해당 타일에 영향력이 없습니다.</color>";
+                    }
+                    else
+                    {
+                        if (SettedTile.SacredPlace)
+                        {
+                            t = $"해당 타일은 성지입니다.<br><color=#ff00ffff>{0}%</color> 확률로 점령을 시도합니다.";
+                        }
+                        else
+                        {
+                            t = $"<color=#ff00ffff>{0}%</color> 확률로 점령을 시도합니다.";
+                        }
+                    }
+                }
+                else
+                {
+                    t = "<color=#ff00ffff>해당 타일은 이미 점령되었습니다.</color>";
+                }
+                break;
         }
+        ui.ShowToolTip(t);
     }
     public void HideTileMenu()
     {
@@ -684,40 +716,40 @@ public class Tiles : MonoBehaviour
         switch (miracle)
         {
             case Miracle.RisingSun:
-                GameManager.Inst.ShowTooltip("1턴간 점령한 무작위 타일 10개에서 호재를 불러일으킵니다.");
+                ui.ShowToolTip("1턴간 점령한 무작위 타일 10개에서 호재를 불러일으킵니다.");
                 break;
             case Miracle.SnakeVenom:
-                GameManager.Inst.ShowTooltip("지정한 종교는 1턴간 아무런 행동을 취할 수 없습니다.");
+                ui.ShowToolTip("지정한 종교는 1턴간 아무런 행동을 취할 수 없습니다.");
                 break;
             case Miracle.CompulsoryExcution:
-                GameManager.Inst.ShowTooltip("1턴간 논쟁 승리시 해당 타일을 강제로 빼앗습니다.");
+                ui.ShowToolTip("1턴간 논쟁 승리시 해당 타일을 강제로 빼앗습니다.");
                 break;
             case Miracle.ForegoneFate:
-                GameManager.Inst.ShowTooltip("다음 턴에 발생할 주사위를 미리 확인하고 고정하거나 배제할 수 있습니다.");
+                ui.ShowToolTip("다음 턴에 발생할 주사위를 미리 확인하고 고정하거나 배제할 수 있습니다.");
                 break;
             case Miracle.ConcealedFuture:
-                GameManager.Inst.ShowTooltip("1턴간 지정한 타일에 악재를 불러일으킵니다.");
+                ui.ShowToolTip("1턴간 지정한 타일에 악재를 불러일으킵니다.");
                 break;
             case Miracle.PropertyGrowth:
-                GameManager.Inst.ShowTooltip("평균 획득 코인의 5배를 즉시 획득합니다.");
+                ui.ShowToolTip("평균 획득 코인의 5배를 즉시 획득합니다.");
                 break;
             case Miracle.Charisma:
-                GameManager.Inst.ShowTooltip("점령확률이 80% 이상인 타일 5개를 점령합니다.");
+                ui.ShowToolTip("점령확률이 80% 이상인 타일 5개를 점령합니다.");
                 break;
             case Miracle.BuildWall:
-                GameManager.Inst.ShowTooltip("1턴간 타 종교의 점령 확률이 20% 미만인 타일에 한해 전도 및 기부 수치를 0으로 변경합니다.");
+                ui.ShowToolTip("1턴간 타 종교의 점령 확률이 20% 미만인 타일에 한해 전도 및 기부 수치를 0으로 변경합니다.");
                 break;
             case Miracle.Prophecy:
-                GameManager.Inst.ShowTooltip("무작위 성유물의 위치를 확인합니다.");
+                ui.ShowToolTip("무작위 성유물의 위치를 확인합니다.");
                 break;
             case Miracle.Judgement:
-                GameManager.Inst.ShowTooltip("3턴간 빼앗긴 타일이 코인을 생산하지 못합니다. 단 재점령시 해당 효과는 취소됩니다.");
+                ui.ShowToolTip("3턴간 빼앗긴 타일이 코인을 생산하지 못합니다. 단 재점령시 해당 효과는 취소됩니다.");
                 break;
             case Miracle.ForesightDream:
-                GameManager.Inst.ShowTooltip("해당 턴의 행동 횟수가 2배가 됩니다.");
+                ui.ShowToolTip("해당 턴의 행동 횟수가 2배가 됩니다.");
                 break;
             case Miracle.FrozenHeart:
-                GameManager.Inst.ShowTooltip("1턴간 보유한 모든 타일을 타 종교의 점령이 실패하였을 경우 해당 타일은 2턴간 점령이 불가해집니다.");
+                ui.ShowToolTip("1턴간 보유한 모든 타일을 타 종교의 점령이 실패하였을 경우 해당 타일은 2턴간 점령이 불가해집니다.");
                 break;
         }
     }

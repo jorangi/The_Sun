@@ -5,36 +5,40 @@ using UnityEngine;
 public class Tooltip : MonoBehaviour
 {
     public RectTransform rect;
-    public TMPro.TextMeshProUGUI text;
-    private string _text;
-    public string _Text
+    public TMPro.TextMeshProUGUI textPlace;
+    private string text = string.Empty;
+    public string Text
     {
-        get => _text;
+        get => text;
         set
         {
-            text.text = string.Empty;
-            _text = value;
-            if (value == string.Empty)
-            {
-                gameObject.SetActive(false);
-            }
-            text.text = value;
+            textPlace.text = string.Empty;
+            text = value;
+            gameObject.SetActive(value != string.Empty);
+            textPlace.text = value;
         }
+    }
+    private void Awake()
+    {
+        Text = string.Empty;
     }
     private void Update()
     {
-        rect.sizeDelta = text.rectTransform.sizeDelta + new Vector2(20, 20);
-        if (Input.mousePosition.x + rect.sizeDelta.x / 2 > Screen.width)
+        int width = Screen.width;
+        int height = Screen.height;
+        Vector2 p = Input.mousePosition;
+        rect.sizeDelta = textPlace.rectTransform.sizeDelta + new Vector2(20, 20);
+        if (p.x + rect.sizeDelta.x / 2 > width)
         {
-            rect.anchoredPosition = new Vector2(Input.mousePosition.x - Screen.width / 2 - rect.sizeDelta.x / 2, Input.mousePosition.y - Screen.height / 2 - 60);
+            rect.anchoredPosition = new Vector2(p.x - width / 2 - rect.sizeDelta.x / 2, p.y - height / 2 - 60);
         }
-        else if(Input.mousePosition.x - rect.sizeDelta.x / 2 < 0)
+        else if(p.x - rect.sizeDelta.x / 2 < 0)
         {
-            rect.anchoredPosition = new Vector2(Input.mousePosition.x - Screen.width / 2 + rect.sizeDelta.x / 2, Input.mousePosition.y - Screen.height / 2 - 60);
+            rect.anchoredPosition = new Vector2(p.x - width / 2 + rect.sizeDelta.x / 2, p.y - height / 2 - 60);
         }
         else
         {
-            rect.anchoredPosition = new Vector2(Input.mousePosition.x - Screen.width / 2, Input.mousePosition.y - Screen.height / 2 - 60);
+            rect.anchoredPosition = new Vector2(p.x - width / 2, p.y - height / 2 - 60);
         }
     }
 }

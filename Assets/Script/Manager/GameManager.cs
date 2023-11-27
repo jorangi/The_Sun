@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     {
         tooltip.gameObject.SetActive(true);
         tooltip.rect.sizeDelta = Vector2.zero;
-        tooltip._Text = text;
+        tooltip.Text = text;
     }
     public void ShowLogBox(string text)
     {

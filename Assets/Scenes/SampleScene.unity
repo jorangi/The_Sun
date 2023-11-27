@@ -206,17 +206,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1187512311}
-        m_TargetAssemblyTypeName: Tiles, Assembly-CSharp
-        m_MethodName: HideCharityMenu
-        m_Mode: 6
+      - m_Target: {fileID: 382376044}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: ShowCharityMenu
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2342178
 MonoBehaviour:
@@ -402,6 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dedfd5723eed5945ae74ef6d365de52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: {fileID: 1187512311}
   btn: {fileID: 10958937}
 --- !u!1001 &16080360
 PrefabInstance:
@@ -1122,7 +1123,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 67.68, y: 24.01}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &196034761
 MonoBehaviour:
@@ -1147,7 +1148,7 @@ MonoBehaviour:
   m_text: "\uAC00\uB098\uB2E4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1210,7 +1211,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &196034762
@@ -1295,7 +1296,7 @@ MonoBehaviour:
   m_text: "\uBA54\uB274 \uB2EB\uAE30"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1358,7 +1359,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &221843948
@@ -1583,8 +1584,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uAE08\uC561\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1614,7 +1615,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 2
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1824,7 +1825,7 @@ MonoBehaviour:
   m_text: "\uAE08\uC561 \uAE30\uBD80"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1887,7 +1888,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &271045537
@@ -1982,9 +1983,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1187512311}
+      - m_Target: {fileID: 382376039}
         m_TargetAssemblyTypeName: Tiles, Assembly-CSharp
-        m_MethodName: Argument
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2044,6 +2045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dedfd5723eed5945ae74ef6d365de52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: {fileID: 1187512311}
   btn: {fileID: 272407712}
 --- !u!1001 &297227652
 PrefabInstance:
@@ -2757,6 +2759,9 @@ MonoBehaviour:
   turnActText: {fileID: 1309111689}
   turnedReligion: {fileID: 1659953637}
   tileInfoUI: {fileID: 1565439924}
+  charityMenu: {fileID: 385794062}
+  TileMenu: {fileID: 1073282765}
+  tooltip: {fileID: 476901633}
 --- !u!1 &385794062
 GameObject:
   m_ObjectHideFlags: 0
@@ -2895,7 +2900,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &392696214
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3600,7 +3605,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &476901627
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3672,7 +3677,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rect: {fileID: 476901627}
-  text: {fileID: 196034761}
+  textPlace: {fileID: 196034761}
 --- !u!1001 &513995531
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5422,8 +5427,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1187512311}
-        m_TargetAssemblyTypeName: Tiles, Assembly-CSharp
+      - m_Target: {fileID: 382376044}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: ShowCharityMenu
         m_Mode: 1
         m_Arguments:
@@ -5484,6 +5489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dedfd5723eed5945ae74ef6d365de52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: {fileID: 1187512311}
   btn: {fileID: 695691514}
 --- !u!1 &698940573
 GameObject:
@@ -6844,6 +6850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dedfd5723eed5945ae74ef6d365de52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: {fileID: 1187512311}
   btn: {fileID: 874340056}
 --- !u!1 &891826021
 GameObject:
@@ -7988,7 +7995,7 @@ MonoBehaviour:
   m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8051,7 +8058,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1020058092
@@ -9311,7 +9318,7 @@ MonoBehaviour:
   m_text: "[\uC601\uD5A5\uB825]"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9374,7 +9381,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1174857786
@@ -9419,7 +9426,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.000022888184}
+  m_AnchoredPosition: {x: 0, y: 0.000030517578}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1183499134
@@ -9913,10 +9920,10 @@ MonoBehaviour:
       - m_Target: {fileID: 1187512311}
         m_TargetAssemblyTypeName: Tiles, Assembly-CSharp
         m_MethodName: Charity
-        m_Mode: 1
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1440816943}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_InputField, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -10122,6 +10129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dedfd5723eed5945ae74ef6d365de52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: {fileID: 1187512311}
   btn: {fileID: 1229994947}
 --- !u!114 &1229994947
 MonoBehaviour:
@@ -11050,11 +11058,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1187512311}
         m_TargetAssemblyTypeName: Tiles, Assembly-CSharp
-        m_MethodName: CharityValueEnd
-        m_Mode: 1
+        m_MethodName: CharityValueEndEdit
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1440816943}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_InputField, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -11077,7 +11085,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1187512311}
+        m_TargetAssemblyTypeName: Tiles, Assembly-CSharp
+        m_MethodName: CharityCalc
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1440816943}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_InputField, Unity.TextMeshPro
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -11089,7 +11109,7 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
-  m_GlobalFontAsset: {fileID: 11400000, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_GlobalFontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
   m_RestoreOriginalTextOnEscape: 1
@@ -12016,6 +12036,7 @@ GameObject:
   - component: {fileID: 1565439925}
   - component: {fileID: 1565439927}
   - component: {fileID: 1565439926}
+  - component: {fileID: 1565439928}
   m_Layer: 5
   m_Name: TileInfo
   m_TagString: Untagged
@@ -12042,7 +12063,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -128}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1565439926
@@ -12059,7 +12080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.9019608}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -12083,6 +12104,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565439924}
   m_CullTransparentMesh: 1
+--- !u!114 &1565439928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565439924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c6c3a02b5c0f5498c218d5590fb05b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1585688637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12824,11 +12857,11 @@ RectTransform:
   - {fileID: 546649259}
   m_Father: {fileID: 382376043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: -440.00003}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 10, y: 75}
   m_SizeDelta: {x: 300, y: 50}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &1663391477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13857,11 +13890,11 @@ RectTransform:
   - {fileID: 757715958}
   m_Father: {fileID: 382376043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -960, y: 415}
   m_SizeDelta: {x: 0, y: 250}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0}
 --- !u!1 &1790372430
 GameObject:
   m_ObjectHideFlags: 0
@@ -13921,8 +13954,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD68D\uB4DD \uC601\uD5A5\uB825 : 0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -14140,11 +14173,11 @@ RectTransform:
   - {fileID: 1049520533}
   m_Father: {fileID: 382376043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: -500}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 10, y: 15}
   m_SizeDelta: {x: 300, y: 50}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &1878101773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14394,6 +14427,7 @@ MonoBehaviour:
   tooltip: {fileID: 476901633}
   tiles: {fileID: 1187512311}
   gameSpeed: 0
+  MaxInfluence: 20
 --- !u!4 &1942698406
 Transform:
   m_ObjectHideFlags: 0
@@ -14813,7 +14847,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1187512311}
         m_TargetAssemblyTypeName: Tiles, Assembly-CSharp
-        m_MethodName: p_Evangelize
+        m_MethodName: Evangelize
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14873,6 +14907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dedfd5723eed5945ae74ef6d365de52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: {fileID: 1187512311}
   btn: {fileID: 2010516235}
 --- !u!1 &2044417221
 GameObject:
@@ -15160,6 +15195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dedfd5723eed5945ae74ef6d365de52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: {fileID: 1187512311}
   btn: {fileID: 2045174249}
 --- !u!1 &2061993693
 GameObject:
@@ -15701,7 +15737,7 @@ MonoBehaviour:
   m_text: "\xD7"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
-  m_sharedMaterial: {fileID: 2708162009292166816, guid: 0308ed65432aabe43a7ced0cffa06726, type: 2}
+  m_sharedMaterial: {fileID: 5495185661338470727, guid: 27762d647a6796d40b314a92a8c475cf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -15764,7 +15800,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &2133847641

@@ -87,6 +87,12 @@ public class TileProduction
         }
     }
     public int totalProductedGold, totalProductedSunlight;
+    private int charitiedGold = 0;
+    public int CharitiedGold
+    {
+        get => charitiedGold;
+        set => charitiedGold = value;
+    }
 
     private bool? status;//null : normal, true : good, false : bad
     public bool? Status
@@ -150,9 +156,8 @@ public class OccupyTile
         }
         den += max;
 
-        float r = den == 0 ? 1 : num / den;
+        float r = max == 0 ? 0 : (float)num / den;
         renderer.color = GameManager.Inst.OccLv.Evaluate(r);
-        //renderer.color = GameManager.Inst.OccLv.Evaluate(Random.Range(0.0f, 1.0f));
     }
 }
 public class RelicInTile
@@ -180,7 +185,7 @@ public class RelicInTile
 public class TileData
 {
     public RelicInTile relic;
-    public OccupyTile occpy;
+    public OccupyTile occupy;
     public TileData[] nearTile = new TileData[4];//EWSN
     public TileProduction Production;
     public GameObject gameObject;
@@ -189,7 +194,10 @@ public class TileData
     public ReligionType SettedRel
     {
         get => settedRel;
-        set => settedRel = value;
+        set
+        {
+            settedRel = value;
+        }
     }
     private Vector2Int pos;
     public Vector2Int POS
@@ -214,10 +222,20 @@ public class TileData
         gameObject = obj;
         symbolSprite = obj.transform.Find("Symbol").GetComponent<SpriteRenderer>();
         sacredSymbol = obj.transform.Find("Sacred").GetComponent<SpriteRenderer>();
-        occpy = new OccupyTile(obj.transform.Find("InnerSquare").GetComponent<SpriteRenderer>());
+        occupy = new OccupyTile(obj.transform.Find("InnerSquare").GetComponent<SpriteRenderer>());
         relic = new(obj.transform.Find("ExistableRelic").GetComponent<SpriteRenderer>());
         Production = new(obj);
         ProductionChange();
+    }
+    public void SetReligionInfluence(Religion rel, (int, int) val)
+    {
+        if (!ReligionsDataInTile.ContainsKey(rel.religionType))
+        {
+            ReligionsDataInTile.Add(rel.religionType, new ReligionDataInTile(rel.religionType, gameObject));
+        }
+        ReligionsDataInTile[rel.religionType].Influence += val.Item1;
+        ReligionsDataInTile[rel.religionType].Stability += val.Item2;
+        occupy.DisplayOccupiable(this);
     }
     public void Subjugate(ReligionType religionType, Sprite symbol)
     {

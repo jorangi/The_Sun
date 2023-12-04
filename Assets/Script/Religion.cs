@@ -46,15 +46,16 @@ public class TechList
 }
 public class ReligionAssets
 {
+    private ReligionType religionType;
     private readonly UIManager ui;
-    private int coin = 10;
+    private int coin = 0;
     public int Coin
     {
         get => coin;
         set
         {
             coin = value;
-            ui.coinUI.ChangeUI(value);
+            if(religionType == Tiles.player.religionType) ui.coinUI.ChangeUI(value);
         }
     }
     private int sunlight = 0;
@@ -64,13 +65,14 @@ public class ReligionAssets
         set
         {
             sunlight = value;
-            ui.sunlightUI.ChangeUI(value);
+            if (religionType == Tiles.player.religionType) ui.sunlightUI.ChangeUI(value);
         }
     }
     public int totalCoin, totalSunlight;
-    public ReligionAssets(UIManager ui)
+    public ReligionAssets(UIManager ui, ReligionType religionType)
     {
         this.ui = ui;
+        this.religionType = religionType;
     }
 }
 public abstract class Religion

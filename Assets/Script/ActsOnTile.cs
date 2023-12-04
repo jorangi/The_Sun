@@ -20,18 +20,26 @@ public class ActsOnTile
     }
     public void Evangelize(Religion rel)
     {
-        FirstContact(rel);
-        ReligionDataInTile d = data.ReligionsDataInTile[rel.religionType];
-        d.Stability = d.Influence == 0 && d.Stability == 0 ? 100 : d.Stability+1;
-        d.Influence += rel.Ideal - rel.Dysentery;
-        //ui.ShowTileInfo(data);
+        data.SetReligionInfluence(rel, Tiles.calc.Evangelize(rel, data));
+        ui.ShowTileMenu();
     }
     public void Charity(Religion rel, int coin)
     {
         FirstContact(rel);
-        ReligionDataInTile d = data.ReligionsDataInTile[rel.religionType];
-        int inf = Mathf.RoundToInt((float)coin / data.Production.GoldProduct * coin / data.Production.totalProductedGold * (data.Production.Status == false ? 2 : 1));
-        d.Stability = d.Influence == 0 && d.Stability == 0 ? 100 : d.Stability + 1;
-        d.Influence += inf;
+        data.SetReligionInfluence(rel, Tiles.calc.Charity(rel, data, coin));
+        rel.assets.Coin -= coin;
+        ui.ShowCharityMenu();
+    }
+    public void Occupy(Religion rel)
+    {
+        int occ = Tiles.calc.Occupy(rel, data);
+        if(Random.Range(0, 101) <= occ)
+        {
+            rel.AddTile(data);
+        }
+        else
+        {
+            Debug.Log("점령실패");
+        }
     }
 }

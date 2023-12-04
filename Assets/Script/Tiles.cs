@@ -17,6 +17,7 @@ public class Tiles : MonoBehaviour
 
     //게임 데이터 관련
     public Sprite[] symbols;
+    public static Calculator calc;
 
     //카메라 관련
     public const int CAMMAX = 5;
@@ -26,7 +27,7 @@ public class Tiles : MonoBehaviour
     public ActsOnTile actsOnTile;
     public TileData[,] tileDatas;
     private Vector2 mousePos;
-    private TileData SettedTile;
+    public TileData SettedTile;
     private bool moveable = false;
     public int width, height;
     public float AvgTotalMadeCoin;
@@ -92,7 +93,7 @@ public class Tiles : MonoBehaviour
     private void Update()
     {
         //레이캐스트
-        if (tileSelectable.Count == 0 && Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !ui.BackPanel.activeSelf)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, 1, 1 << 6);
@@ -109,14 +110,6 @@ public class Tiles : MonoBehaviour
         float size = Camera.main.orthographicSize;
         if (Input.mouseScrollDelta.y != 0)
         {
-            if(Input.mouseScrollDelta.y > 0)
-            {
-                //Debug.Log("스크롤 올림");
-            }
-            else
-            {
-                //Debug.Log("스크롤 내림");
-            }
             Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - Input.mouseScrollDelta.y, CAMMAX, CAMMIN);
             size = Camera.main.orthographicSize;
@@ -145,6 +138,7 @@ public class Tiles : MonoBehaviour
     }
     private void Init()
     {
+        calc = new();
         actsOnTile = new() { ui = this.ui};
         MiraclePrice = new int[] { 190, 210, 130, 250, 160, 90, 200, 155, 320, 225, 350, 195, 330 };
         for (int i = 1; i < System.Enum.GetValues(typeof(HolyRelic)).Length; i++)
@@ -192,11 +186,12 @@ public class Tiles : MonoBehaviour
             }
         }
         player = ReligionDataSetup(ReligionType.TheSun);
+        player.assets.Coin = 10;
         religions.Add(player);
 
         foreach(TileData tileData in tileDatas) 
         {
-            tileData.occpy.DisplayOccupiable(tileData);
+            tileData.occupy.DisplayOccupiable(tileData);
         }
         //테크 전부 오픈
         //for (int i = 0; i < 5; i++)
@@ -330,7 +325,7 @@ public class Tiles : MonoBehaviour
         obj.name = religion.religionType.ToString();
         obj.transform.GetChild(0).GetComponent<Image>().sprite = religion.symbol;
         obj.GetComponentInChildren<TextMeshProUGUI>().text = $"{1}";
-        religion.assets = new ReligionAssets(ui);
+        religion.assets = new ReligionAssets(ui, religionType);
         return religion;
     }
     public void AddTile(Religion religion, TileData tileData)
@@ -344,8 +339,7 @@ public class Tiles : MonoBehaviour
         actsOnTile.Data = data;
         if (player.CheckContainShowedTile(data))
         {
-            ui.TileMenu.SetActive(true);
-            tileSelectable.Add(true);
+            ui.ShowTileMenu();
         }
     }
     public void Evangelize()
@@ -366,16 +360,43 @@ public class Tiles : MonoBehaviour
     }
     public void CharityCalc(TMP_InputField input)
     {
-        int val = 0;
+        int val;
+        try
+        {
+            val = calc.Charity(player, SettedTile, int.Parse(input.text)).Item1;
+        }
+        catch
+        {
+            val = 0;
+        }
         ui.Charity.ChangeUI($"획득 영향력 : {val}");
     }
     public void CharityValueEndEdit(TMP_InputField input)
     {
         if (input.text == string.Empty) return;
         int i = int.Parse(input.text);
+        try{ i = int.Parse(input.text); }catch { i = 0; }
         i =  i > player.assets.Coin ? player.assets.Coin : i;
         input.text = string.Format("{0:#,###}", i);
         CharityCalc(input);
+    }
+    public void SurveyRelic()
+    {
+        SettedTile.relic.Survey(player);
+        ui.ShowTileMenu();
+    }
+    public void SurveyRelic(Religion rel)
+    {
+        SettedTile.relic.Survey(rel);
+        ui.ShowTileMenu();
+    }
+    public void Occupy()
+    {
+        Occupy(player);
+    }
+    public void Occupy(Religion rel)
+    {
+        actsOnTile.Occupy(rel);
     }
     public void ShowToolTip(int i)
     {
@@ -386,9 +407,9 @@ public class Tiles : MonoBehaviour
             default:
                 break;
             case 1:
-                if (d.Influence < 20)
+                if (d.Influence < GameManager.Inst.MaxInfluence)
                 {
-                    t = $"전도를 하여 <color=#ffff00ff>{0}</color>만큼의 영향력을 높힙니다.";
+                    t = $"전도를 하여 <color=#ffff00ff>{calc.Evangelize(player, SettedTile).Item1}</color>만큼의 영향력을 높힙니다.";
                 }
                 else
                 {
@@ -452,11 +473,11 @@ public class Tiles : MonoBehaviour
                     {
                         if (SettedTile.SacredPlace)
                         {
-                            t = $"해당 타일은 성지입니다.<br><color=#ff00ffff>{0}%</color> 확률로 점령을 시도합니다.";
+                            t = $"해당 타일은 성지입니다.<br><color=#ff00ffff>{calc.Occupy(player, SettedTile)}%</color> 확률로 점령을 시도합니다.";
                         }
                         else
                         {
-                            t = $"<color=#ff00ffff>{0}%</color> 확률로 점령을 시도합니다.";
+                            t = $"<color=#ff00ffff>{calc.Occupy(player, SettedTile)}%</color> 확률로 점령을 시도합니다.";
                         }
                     }
                 }
@@ -467,12 +488,6 @@ public class Tiles : MonoBehaviour
                 break;
         }
         ui.ShowToolTip(t);
-    }
-    public void HideTileMenu()
-    {
-        tileMenu.SetActive(false);
-        GameManager.Inst.tooltip.gameObject.SetActive(false);
-        tileSelectable.Remove(true);
     }
     public int RandomActable(Religion rel)
     {
@@ -781,7 +796,6 @@ public class Tiles : MonoBehaviour
             bestRel.Ideal -= 15;
             bestRel = null;
         }
-
         Turn++;
     }
     public void AutoPlaySwitch()

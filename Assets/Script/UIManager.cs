@@ -91,6 +91,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject tileInfoUI, charityMenu;
     public GameObject TileMenu;
+    public GameObject BackPanel;
     #endregion
     #region UIObject
     public ValueUI coinUI, sunlightUI, turnUI, turnActUI, logicUI, idealUI;
@@ -109,17 +110,24 @@ public class UIManager : MonoBehaviour
         TileInfo = new TileInfoUI(tileInfoUI);
         Charity = new CharityMenu(charityMenu);
     }
+    public void ShowTileMenu()
+    {
+        BackPanel.SetActive(!TileMenu.activeSelf);
+        TileMenu.SetActive(!TileMenu.activeSelf);
+        ShowToolTip(string.Empty);
+    }
     public void ShowTileInfo(TileData tileData)
     {
         TileInfo.SetPosition(tileData.POS);
         TileInfo.SetContext(tileData);
         tileInfoUI.SetActive(true);
+        BackPanel.SetActive(true);
     }
     public void ShowCharityMenu()
     {
-        ShowToolTip(string.Empty);
+        ShowTileMenu();
         Charity.ShowCharityMenu();
-        TileMenu.SetActive(!TileMenu.activeSelf);
+        BackPanel.SetActive(!BackPanel.activeSelf);
     }
     public void ShowToolTip(string con)
     {

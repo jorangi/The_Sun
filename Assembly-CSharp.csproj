@@ -60,11 +60,13 @@
   <ItemGroup>
     <Compile Include="Assets\Script\LogItem.cs" />
     <Compile Include="Assets\Script\Tile.cs" />
+    <Compile Include="Assets\Script\BuyRelicButton.cs" />
     <Compile Include="Assets\Script\Relics\EternalTorch.cs" />
     <Compile Include="Assets\Script\Observer.cs" />
     <Compile Include="Assets\Script\Relics\GuardCharm.cs" />
     <Compile Include="Assets\Script\Relics\SaintStaff.cs" />
     <Compile Include="Assets\Script\Relics\GoldenEye.cs" />
+    <Compile Include="Assets\Script\SurveyRelicButton.cs" />
     <Compile Include="Assets\Script\Manager\GameManager.cs" />
     <Compile Include="Assets\Script\UIManager.cs" />
     <Compile Include="Assets\Script\Relics\MiracleDice.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="Assets\Script\ActsOnTile.cs" />
     <Compile Include="Assets\Script\Tooltip.cs" />
     <Compile Include="Assets\Script\Relic.cs" />
+    <Compile Include="Assets\Script\Manager\Calculator.cs" />
     <Compile Include="Assets\Script\Relics\WrittenStone.cs" />
     <Compile Include="Assets\Script\Relics\NoWitherFlower.cs" />
     <Compile Include="Assets\Script\Relics\SaintCrown.cs" />
